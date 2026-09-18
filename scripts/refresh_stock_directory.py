@@ -164,7 +164,7 @@ def build():
         'dates': {'CN': collected, 'HK': dt.datetime.strptime(hk_en[1][0].split()[-1], '%d/%m/%Y').date().isoformat(), 'US': min(us_dates)},
         'counts': {m: len(rows) for m, rows in stocks.items()},
         'beijingUnverified': bj_unverified,
-        'scope': '沪深北 A 股、港交所股本证券与 REIT、美股交易所普通股/ADR/REIT 等权益证券；不含全球其他市场、OTC、ETF、优先股、债券、权证及退市证券。目录为快照，新上市或更名需刷新。',
+        'scope': '沪深北 A 股、港交所股本证券与 REIT、美股交易所普通股/ADR/REIT 等权益证券；仍收录少量优先股或特殊证券，不代表全球其他市场、OTC、基金、债券、权证及退市证券的完整目录。目录为快照，新上市或更名需刷新。',
         'sources': [
             {'name': '上海证券交易所', 'url': 'https://www.sse.com.cn/assortment/stock/list/share/'},
             {'name': '深圳证券交易所', 'url': 'https://www.szse.cn/market/stock/company/'},

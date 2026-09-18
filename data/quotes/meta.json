@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-18T08:16:20+00:00",
+  "directoryCount": 14116,
+  "available": 14092,
+  "withVolume": 14092,
+  "withAmount": 14092,
+  "byMarket": {
+    "CN": 5565,
+    "HK": 2822,
+    "US": 5705
+  },
+  "missing": [
+    {
+      "id": "HK:04621",
+      "name": "CINDA 21USDPREF"
+    },
+    {
+      "id": "US:BAC$E",
+      "name": "Bank of America Corporation Depositary Sh repstg 1/1000th Perp Pfd Ser E"
+    },
+    {
+      "id": "US:BAC$L",
+      "name": "Bank of America Corporation Non Cumulative Perpetual Conv Pfd Ser L"
+    },
+    {
+      "id": "US:DBRG$H",
+      "name": "DigitalBridge Group, Inc. 7.125% Series H"
+    },
+    {
+      "id": "US:DBRG$I",
+      "name": "DigitalBridge Group, Inc. 7.15% Series I"
+    },
+    {
+      "id": "US:DBRG$J",
+      "name": "DigitalBridge Group, Inc. 7.125% Series J"
+    },
+    {
+      "id": "US:EPR$E",
+      "name": "EPR Properties Series E Cumulative Conv Pfd Shs Ser E"
+    },
+    {
+      "id": "US:EQH$A",
+      "name": "Equitable Holdings, Inc. Depositary Shares"
+    },
+    {
+      "id": "US:FITB$I",
+      "name": "Fifth Third Bancorp Depositary Share repstg 1/1000th Ownership Interest Perp Pfd Series I"
+    },
+    {
+      "id": "US:GAB$H",
+      "name": "Gabelli Equity Trust, Inc. (The) Pfd Ser H"
+    },
+    {
+      "id": "US:GS$D",
+      "name": "Goldman Sachs Group, Inc. (The) Dep Shs repstg 1/1000 Pfd Ser D Fltg"
+    },
+    {
+      "id": "US:MET$E",
+      "name": "MetLife, Inc. Depositary Shares"
+    },
+    {
+      "id": "US:MS$A",
+      "name": "Morgan Stanley Dep Shs repstg 1/1000 Pfd Ser A"
+    },
+    {
+      "id": "US:MS$F",
+      "name": "Morgan Stanley Dep Shs Rpstg 1/1000th Int Prd Ser F Fxd to Flag"
+    },
+    {
+      "id": "US:NEE$S",
+      "name": "NextEra Energy, Inc. 7.299% Corporate Units"
+    },
+    {
+      "id": "US:NEE$T",
+      "name": "NextEra Energy, Inc. 7.234% Corporate Units"
+    },
+    {
+      "id": "US:NEE$V",
+      "name": "NextEra Energy, Inc. 7.375% Corporate Units"
+    },
+    {
+      "id": "US:NLY$F",
+      "name": "Annaly Capital Management Inc 6.95% Series F"
+    },
+    {
+      "id": "US:SCE$L",
+      "name": "SCE TRUST VI"
+    },
+    {
+      "id": "US:STT$G",
+      "name": "State Street Corporation Depositary shares, each representing a 1/4,000th ownership interest in a share of Fixed-to-Floating Rate Non-Cumulative"
+    },
+    {
+      "id": "US:TFC$I",
+      "name": "Truist Financial Corporation Depositary Shares"
+    },
+    {
+      "id": "US:USB$A",
+      "name": "U.S. Bancorp Depositary Shares, Each representing a 1/100th interest in a share of Series A Non-CumulativePerpetual Pfd Stock"
+    },
+    {
+      "id": "US:USB$H",
+      "name": "U.S. Bancorp Depositary Shares repstg 1/1000th Pfd Ser B"
+    },
+    {
+      "id": "US:VNO$L",
+      "name": "Vornado Realty Trust Pfd Ser L %"
+    }
+  ],
+  "shards": 16,
+  "source": "https://qt.gtimg.cn/",
+  "refresh": "Manual; no scheduled task configured"
+}

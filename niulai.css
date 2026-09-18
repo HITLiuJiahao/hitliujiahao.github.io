@@ -275,3 +275,10 @@
 .nl-report-source{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.59375rem;line-height:1.8;flex-wrap:wrap;padding-top:.75rem;color:#a1a9b7}
 .nl-report-source a{color:#9b8c89;text-decoration:underline;text-underline-offset:.1875rem}
 @media(max-width:360px){.nl-chart-heading h4{font-size:.78125rem}.nl-visual-verdict h4{font-size:.84375rem}.nl-visual-verdict img{width:4rem;height:4rem}.nl-chart-tabs button{min-width:2rem}.nl-signal-cards>div{padding:.625rem .4375rem}}
+
+.nl-quote-metrics{display:grid;grid-template-columns:1fr 1fr;gap:.625rem;background:#faf8f7;border:1px solid #f6eeeb;border-radius:.5rem;margin:.6875rem 0 .375rem;padding:.75rem .8125rem}
+.nl-quote-metrics>div{display:flex;flex-direction:column;gap:.375rem;min-width:0}
+.nl-quote-metrics>div+div{border-left:1px solid #eee5e1;padding-left:.625rem}
+.nl-quote-metrics span{font-size:.625rem;color:#a29591}
+.nl-quote-metrics strong{font-size:.875rem;font-weight:500;color:#766862;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.nl-quote-backup{font-size:.625rem;line-height:1.7;color:#b49468;background:#fdf8f0;padding:.5rem .625rem;border-radius:.375rem;margin:.5rem 0}

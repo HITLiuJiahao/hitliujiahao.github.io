@@ -203,7 +203,7 @@
       if(!window.NiulaiData || !window.NiulaiCache)throw new Error('数据模块未能载入');
       const cached=window.NiulaiData.peek(stock);
       if(Object.values(cached.sections).some(section=>section?.data))renderReport(stock,cached,{updating:true});
-      const data=await window.NiulaiData.load(stock,{signal:controller.signal,force});
+      const data=await window.NiulaiData.load(stock,{signal:controller.signal,force,onUpdate:data=>{if(run===state.run && state.selected?.id===stock.id)renderReport(stock,data,{updating:true});}});
       if(run===state.run && state.selected?.id===stock.id)renderReport(stock,data);
     }catch(error){
       if(error.name==='AbortError' || run!==state.run)return;

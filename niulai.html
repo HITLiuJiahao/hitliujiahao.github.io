@@ -8,7 +8,7 @@
   <title>问牛来 · 股票值得买吗</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4844'/%3E%3Cpath d='m5 24 7-8 5 4 9-13m-7 1 8-2-1 8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="niulai.css?v=4">
+  <link rel="stylesheet" href="niulai.css?v=5">
   <script src="stock-catalog.js" defer></script>
   <script src="stock-directory-cn.js?v=3" defer></script>
   <script src="stock-directory-cn-2.js?v=3" defer></script>
@@ -18,10 +18,12 @@
   <script src="stock-directory-us.js?v=3" defer></script>
   <script src="stock-directory-us-2.js?v=3" defer></script>
   <script src="stock-directory-us-3.js?v=3" defer></script>
-  <script src="niulai-cache.js?v=4" defer></script>
-  <script src="niulai-data.js?v=4" defer></script>
-  <script src="niulai-charts.js?v=4" defer></script>
-  <script src="niulai.js?v=4" defer></script>
+  <script src="niulai-cache.js?v=5" defer></script>
+  <script src="stock-market-map.js?v=5" defer></script>
+  <script src="niulai-quotes.js?v=5" defer></script>
+  <script src="niulai-data.js?v=5" defer></script>
+  <script src="niulai-charts.js?v=5" defer></script>
+  <script src="niulai.js?v=5" defer></script>
 </head>
 <body>
   <div class="app-shell niulai-shell">
@@ -79,7 +81,7 @@
             <svg class="icon nl-button-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
           </button>
           <p class="nl-catalog-note" id="catalog-note" role="status">正在载入股票目录…</p>
-          <details class="nl-catalog-details"><summary>收录范围与数据来源 <span>›</span></summary><div id="catalog-coverage"></div><p>收录沪深北 A 股、港股及美股交易所权益证券。暂不含其他国家市场、OTC、ETF、优先股、债券、权证和退市证券；新上市或更名需更新目录。</p><p>沪深港及美股采用交易所公开名单，北交所采用巨潮资讯名单并核验腾讯行情代码。美股支持代码、英文名称及部分常用中文别名。</p><div class="nl-source-links"><a href="https://www.sse.com.cn/assortment/stock/list/share/" target="_blank" rel="noopener noreferrer">上交所</a><a href="https://www.szse.cn/market/stock/company/" target="_blank" rel="noopener noreferrer">深交所</a><a href="https://www.cninfo.com.cn/" target="_blank" rel="noopener noreferrer">巨潮资讯</a><a href="https://www.hkex.com.hk/Services/Trading/Securities/Securities-Lists?sc_lang=zh-HK" target="_blank" rel="noopener noreferrer">港交所</a><a href="https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs" target="_blank" rel="noopener noreferrer">Nasdaq</a></div></details>
+          <details class="nl-catalog-details"><summary>收录范围与数据来源 <span>›</span></summary><div id="catalog-coverage"></div><p>收录沪深北 A 股、港股及美股交易所权益证券。暂不含其他国家市场、OTC、ETF、债券、权证和退市证券；少量特殊证券仅收录标识，可能暂无有效报价；新上市或更名需更新目录。</p><p>沪深港及美股采用交易所公开名单，北交所采用巨潮资讯名单并核验腾讯行情代码。美股支持代码、英文名称及部分常用中文别名。</p><div class="nl-source-links"><a href="https://www.sse.com.cn/assortment/stock/list/share/" target="_blank" rel="noopener noreferrer">上交所</a><a href="https://www.szse.cn/market/stock/company/" target="_blank" rel="noopener noreferrer">深交所</a><a href="https://www.cninfo.com.cn/" target="_blank" rel="noopener noreferrer">巨潮资讯</a><a href="https://www.hkex.com.hk/Services/Trading/Securities/Securities-Lists?sc_lang=zh-HK" target="_blank" rel="noopener noreferrer">港交所</a><a href="https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs" target="_blank" rel="noopener noreferrer">Nasdaq</a></div></details>
         </form>
       </section>
 

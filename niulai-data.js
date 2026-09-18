@@ -8,6 +8,7 @@
   const average=values=>values.length?values.reduce((a,b)=>a+b,0)/values.length:null;
   const dateValid=value=>/^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;
   function symbol(stock){
+    if(window.NiulaiMarketMap?.[stock.id])return window.NiulaiMarketMap[stock.id];
     if(stock.market==='CN' && /^\d{6}$/.test(stock.code))return (stock.exchange==='沪市'?'sh':stock.exchange==='深市'?'sz':'bj')+stock.code;
     if(stock.market==='HK' && /^\d{5}$/.test(stock.code))return 'hk'+stock.code;
     if(stock.market==='US' && /^[A-Z][A-Z0-9.\-]{0,12}$/.test(stock.code)){
@@ -31,8 +32,8 @@
   function parseMarket(data,id,stock){
     const item=data[id];
     if(!item || typeof item!=='object')throw new Error('Wrong security');
-    const raw=Array.isArray(item.qfqday)?item.qfqday:Array.isArray(item.day)?item.day:[];
-    const basis=Array.isArray(item.qfqday)?'前复权':'未复权';
+    const raw=Array.isArray(item.qfqday)&&item.qfqday.length?item.qfqday:Array.isArray(item.day)?item.day:[];
+    const basis=Array.isArray(item.qfqday)&&item.qfqday.length?'前复权':'未复权';
     const bars=raw.map(row=>({date:String(row[0]),open:number(row[1]),close:number(row[2]),high:number(row[3]),low:number(row[4]),volume:number(row[5])}));
     const tomorrow=new Date(Date.now()+DAY).toISOString().slice(0,10);
     if(!bars.length || bars.some((b,i)=>!dateValid(b.date) || b.date>tomorrow || [b.open,b.close,b.high,b.low].some(v=>v===null||v<=0) || b.volume===null || b.volume<0 || b.high<Math.max(b.open,b.close,b.low)-.01 || b.low>Math.min(b.open,b.close,b.high)+.01 || i>0&&b.date<=bars[i-1].date))throw new Error('Invalid prices');
@@ -42,16 +43,10 @@
     const history=bars.slice(Math.max(0,gap));
     const q=item.qt?.[id];
     let quote=null;
-    if(Array.isArray(q) && q.length>32){
-      const expected=stock.market==='US'?id.slice(2):stock.code;
-      if(String(q[2]).toUpperCase()!==expected.toUpperCase())throw new Error('Quote security mismatch');
-      let time=String(q[30]||'').replace(/\//g,'-');
-      if(/^\d{14}$/.test(time))time=time.replace(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/,'$1-$2-$3 $4:$5:$6');
-      if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(time) && finite(q[3]) && +q[3]>0)quote={price:+q[3],change:number(q[32]),time,delayed:stock.market==='US'||q[0]==='delay'};
-    }
+    if(Array.isArray(q)){try{quote=window.NiulaiQuotes.fromFields(q,stock);}catch{}}
     const last=history.at(-1),closeTime=stock.market==='CN'?'15:00':stock.market==='HK'?'16:10':'16:00';
     const partial=!quote || (quote.time.slice(0,10)===last.date && quote.time.slice(11,16)<closeTime);
-    return {symbol:id,bars:history,basis,quote,partial,currency:{CN:'人民币',HK:'港元',US:'美元'}[stock.market],timezone:stock.market==='US'?'美东时间':'北京时间'};
+    return {symbol:id,bars:history,basis,quote,partial,currency:quote?.currency||{CN:'人民币',HK:'港元',US:'美元'}[stock.market],timezone:stock.market==='US'?'美东时间':'北京时间'};
   }
   function link(value){
     try {const u=new URL(value);return u.protocol==='https:' && /(^|\.)qq\.com$/.test(u.hostname) && !u.username && !u.password ? u.href:'';}catch{return '';}
@@ -100,12 +95,14 @@
   }
   function configs(stock){
     const id=symbol(stock);
-    if(!id)return {};
+    const quoteConfig={schema:1,ttl:5*60000,maxAge:7*DAY,validate:d=>window.NiulaiQuotes.valid(d,stock),fetcher:()=>window.NiulaiQuotes.live(stock)};
+    if(!id)return {quote:quoteConfig};
     const param=encodeURIComponent(id);
     const profileURL=stock.market==='CN'?`${PROXY}appstock/app/stockinfo/jiankuang?code=${param}&app=official_website`:stock.market==='HK'?`${PROXY}appstock/app/hkStockinfo/jiankuang?code=${param}`:`${PROXY}appstock/us/introduce/brief?symbol=${param}`;
     const newsValid=d=>d && Array.isArray(d.items) && d.items.length<=12 && d.items.every(n=>n && typeof n.title==='string' && typeof n.time==='string' && dateValid(n.time.slice(0,10)) && typeof n.source==='string' && typeof n.url==='string' && (!n.url || link(n.url)===n.url));
     return {
-      market:{schema:1,ttl:5*60000,maxAge:7*DAY,validate:d=>d?.symbol===id && Array.isArray(d.bars) && d.bars.length>0 && d.bars.length<=250 && d.bars.every((b,i)=>b && [b.open,b.close,b.high,b.low,b.volume].every(Number.isFinite) && b.close>0 && b.volume>=0 && dateValid(b.date) && (!i || b.date>d.bars[i-1].date)) && ['前复权','未复权'].includes(d.basis) && typeof d.currency==='string' && (!d.quote || Number.isFinite(d.quote.price) && typeof d.quote.time==='string' && (d.quote.change===null || Number.isFinite(d.quote.change))),fetcher:async()=>parseMarket(await json(`https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=${param},day,,,180,qfq`),id,stock)},
+      quote:quoteConfig,
+      market:{schema:2,ttl:5*60000,maxAge:7*DAY,validate:d=>d?.symbol===id && Array.isArray(d.bars) && d.bars.length>0 && d.bars.length<=250 && d.bars.every((b,i)=>b && [b.open,b.close,b.high,b.low,b.volume].every(Number.isFinite) && b.close>0 && b.volume>=0 && dateValid(b.date) && (!i || b.date>d.bars[i-1].date)) && ['前复权','未复权'].includes(d.basis) && typeof d.currency==='string' && (!d.quote || Number.isFinite(d.quote.price) && typeof d.quote.time==='string' && (d.quote.change===null || Number.isFinite(d.quote.change))),fetcher:async()=>{for(const base of [PROXY,'https://web.ifzq.gtimg.cn/']){try{return parseMarket(await json(`${base}appstock/app/fqkline/get?param=${param},day,,,180,qfq`),id,stock);}catch{}}throw new Error('History not returned');}},
       profile:{schema:1,ttl:DAY,maxAge:30*DAY,validate:d=>d && Array.isArray(d.industries) && d.industries.every(i=>i && typeof i.name==='string' && typeof i.id==='string') && Array.isArray(d.revenue) && d.revenue.every(p=>p && typeof p.name==='string' && Number.isFinite(p.share) && p.share>=0 && p.share<=100) && typeof d.business==='string' && typeof d.reportDate==='string',fetcher:async()=>parseProfile(await json(profileURL),stock)},
       news:{schema:1,ttl:15*60000,maxAge:7*DAY,validate:newsValid,fetcher:async()=>parseNews(await json(`${PROXY}appstock/news/info/search?page=1&symbol=${param}&n=12&type=2`),id)},
       ...(stock.market==='CN'?{industryNews:{schema:1,ttl:15*60000,maxAge:7*DAY,validate:newsValid,fetcher:async()=>parseNews(await json(`${PROXY}appstock/news/HyNews/getBySymbol?symbol=${param}`),id,true)}}:{})
@@ -115,11 +112,16 @@
   function peek(stock){
     const report={stock,source:'腾讯自选股',symbol:symbol(stock),sections:{}};
     for(const [kind,config] of Object.entries(configs(stock)))report.sections[kind]=window.NiulaiCache.peek(key(stock,kind),config);
+    report.sections.savedQuote=window.NiulaiQuotes.peek(stock);
     return report;
   }
   async function load(stock,options={}){
     const report={stock,source:'腾讯自选股',symbol:symbol(stock),sections:{}};
-    await Promise.all(Object.entries(configs(stock)).map(async([kind,config])=>{report.sections[kind]=await window.NiulaiCache.get(key(stock,kind),config,options);}));
+    const changed=()=>{if(!options.signal?.aborted)options.onUpdate?.(report);};
+    await Promise.all([
+      ...Object.entries(configs(stock)).map(async([kind,config])=>{report.sections[kind]=await window.NiulaiCache.get(key(stock,kind),config,options);changed();}),
+      window.NiulaiQuotes.saved(stock,{signal:options.signal}).then(section=>{report.sections.savedQuote=section;changed();})
+    ]);
     return report;
   }
   function calculate(market){
