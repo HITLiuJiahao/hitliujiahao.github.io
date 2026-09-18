@@ -1,7 +1,18 @@
-/* Frontend demo only: local matching and explicitly labelled educational templates. */
+/* Public security-directory snapshots; analysis remains a labelled visual demo. */
 (() => {
   'use strict';
-  const {stocks,sectors} = window.NiulaiCatalog;
+  const curated=window.NiulaiCatalog?.stocks || [];
+  const curatedById=new Map(curated.map(stock=>[stock.id,stock]));
+  const directory=window.NiulaiDirectory || {};
+  const loadedMarkets=['CN','HK','US'].filter(market=>Array.isArray(directory[market]?.rows) && directory[market].rows.length===directory[market].total && Object.keys(directory[market].chunks).length===directory[market].parts);
+  const stocks=['CN','HK','US'].flatMap(market=>{
+    if(!loadedMarkets.includes(market))return curated.filter(stock=>stock.market===market);
+    return directory[market].rows.map(([code,name,initials,pinyin,aliases,exchange])=>{
+      const id=`${market}:${code}`,known=curatedById.get(id);
+      return {id,market,code,name:market==='US'&&known?known.name:name,initials:known?.initials||initials,pinyin:known?.pinyin||pinyin,exchange,
+        aliases:[...new Set([name,initials,pinyin,...aliases,...(known?[known.name,known.initials,known.pinyin,...known.aliases]:[])])].filter(Boolean)};
+    });
+  });
   const $ = selector => document.querySelector(selector);
   const input = $('#stock-query');
   const options = $('#stock-options');
@@ -30,14 +41,19 @@
     return edits+(a<left.length || b<right.length ? 1 : 0)<=1;
   }
 
-  function scoreStock(stock,query) {
-    const name=normalize(stock.name), code=stock.code;
+  // Normalize once on load rather than repeating it for 14,000+ records per key.
+  const index=new Map(stocks.map(stock=>{
     const exchange=stock.market==='CN' ? (stock.exchange==='沪市'?'SH':stock.exchange==='深市'?'SZ':'BJ') : stock.market;
-    const codeNames=[code,`${exchange}${code}`,`${code}.${exchange}`];
-    if (stock.market==='HK' && /^\d{1,5}$/.test(query)) codeNames.push(String(Number(code)));
+    const codeNames=[stock.code,`${exchange}${stock.code}`,`${stock.code}.${exchange}`];
+    if(stock.market==='HK')codeNames.push(String(Number(stock.code)),`${Number(stock.code)}.HK`);
+    if(stock.market==='US'&&stock.code.includes('.'))codeNames.push(stock.code.replace('.','-'),stock.code.replace('.','/'));
+    return [stock.id,{name:normalize(stock.name),codeNames,aliases:[stock.initials,stock.pinyin,...stock.aliases].filter(Boolean).map(normalize)}];
+  }));
+  const marketStocks={all:stocks,CN:stocks.filter(s=>s.market==='CN'),HK:stocks.filter(s=>s.market==='HK'),US:stocks.filter(s=>s.market==='US')};
+  function scoreStock(stock,query) {
+    const {name,codeNames,aliases}=index.get(stock.id),code=stock.code;
     if (codeNames.includes(query)) return {score:120,exact:true};
     if (name===query) return {score:115,exact:true};
-    const aliases=[stock.initials,stock.pinyin,...stock.aliases].map(normalize);
     if (aliases.includes(query)) return {score:110,exact:true};
     if (code.startsWith(query)) return {score:90};
     if (name.startsWith(query)) return {score:85};
@@ -50,9 +66,11 @@
 
   function findMatches(value) {
     const query=normalize(value);
-    const available=stocks.filter(stock=>state.market==='all' || stock.market===state.market);
-    if (!query) return preferred[state.market].map(id=>({stock:stockById.get(id),score:0}));
-    return available.map(stock=>({stock,...scoreStock(stock,query)})).filter(item=>item.score>0).sort((a,b)=>b.score-a.score || a.stock.name.localeCompare(b.stock.name,'zh-CN'));
+    const available=marketStocks[state.market];
+    if (!query) return preferred[state.market].filter(id=>stockById.has(id)).map(id=>({stock:stockById.get(id),score:0}));
+    const matches=[];
+    for(const stock of available){const result=scoreStock(stock,query);if(result)matches.push({stock,...result});}
+    return matches.sort((a,b)=>b.score-a.score || Number(curatedById.has(b.stock.id))-Number(curatedById.has(a.stock.id)) || a.stock.code.localeCompare(b.stock.code));
   }
 
   function highlighted(text) {
@@ -78,14 +96,14 @@
     state.active=-1;
     input.removeAttribute('aria-activedescendant');
     const visible=state.matches.slice(0,8);
-    options.innerHTML=visible.map(({stock},index)=>`<button class="nl-option" id="stock-option-${index}" type="button" role="option" aria-selected="false" tabindex="-1" data-stock-id="${stock.id}">${marketLabel(stock)}<span class="nl-option-main"><span class="nl-option-name">${highlighted(stock.name)}</span><span class="nl-option-code">${highlighted(stock.code)} · ${escapeHTML(stock.exchange)}</span></span>${chevron}</button>`).join('');
+    options.innerHTML=visible.map(({stock},index)=>`<button class="nl-option" id="stock-option-${index}" type="button" role="option" aria-selected="false" tabindex="-1" data-stock-id="${escapeHTML(stock.id)}" title="${escapeHTML(stock.name)} · ${escapeHTML(stock.code)}">${marketLabel(stock)}<span class="nl-option-main"><span class="nl-option-name">${highlighted(stock.name)}</span><span class="nl-option-code">${highlighted(stock.code)} · ${escapeHTML(stock.exchange)}</span></span>${chevron}</button>`).join('');
     $('#suggestion-caption').textContent=normalize(input.value) ? (visible[0]?.fuzzy ? '你是不是想找' : '猜你想找') : '可以从这些股票开始';
     $('#match-count').textContent=state.matches.length>8 ? `${state.matches.length} 只匹配 · 展示前 8 只` : `${state.matches.length} 只匹配`;
     $('#no-matches').hidden=Boolean(visible.length);
-    $('#no-matches').textContent=state.market==='all' ? '演示股票库暂未收录，可试试“腾讯”“茅台”或“AAPL”。' : `当前${marketNames[state.market]}演示库中没有匹配，可切换“全部”或更换关键词。`;
+    $('#no-matches').textContent=state.market==='all' ? '当前目录没有匹配，请试试完整代码或英文名称；新上市股票可能尚未更新。' : `当前${marketNames[state.market]}目录没有匹配，可切换“全部”或使用完整代码。`;
     suggestions.hidden=false;
     input.setAttribute('aria-expanded','true');
-    announce(visible.length ? `找到 ${state.matches.length} 只匹配股票，可用上下方向键选择。` : '没有匹配的演示股票。');
+    announce(visible.length ? `找到 ${state.matches.length} 只匹配股票，可用上下方向键选择。` : '当前股票目录没有匹配。');
   }
 
   function setActive(index) {
@@ -144,7 +162,7 @@
   }
 
   function renderQuickPicks() {
-    $('#quick-picks').innerHTML=preferred[state.market].map(id=>{const stock=stockById.get(id);return `<button type="button" data-quick-stock="${id}">${escapeHTML(stock.name)}</button>`;}).join('');
+    $('#quick-picks').innerHTML=preferred[state.market].filter(id=>stockById.has(id)).map(id=>{const stock=stockById.get(id);return `<button type="button" data-quick-stock="${id}">${escapeHTML(stock.name)}</button>`;}).join('');
   }
 
   function setMarket(market) {
@@ -159,18 +177,13 @@
     if (input.value && !state.selected) renderSuggestions(); else closeSuggestions();
   }
 
-  function evidence(number,title,text,tags,status) {
-    return `<details open><summary><span class="nl-evidence-number">${number}</span><span>${title}</span><span class="nl-evidence-state">${status}</span>${chevron}</summary><div class="nl-evidence-copy"><p>${escapeHTML(text)}</p><div class="nl-evidence-chips">${tags.map(tag=>`<span>${escapeHTML(tag)}</span>`).join('')}</div></div></details>`;
-  }
-
   function renderReport(stock) {
-    const sector=sectors[stock.sector];
-    advice.innerHTML=`<article class="nl-report"><div class="nl-report-stock"><h3>${escapeHTML(stock.name)}</h3>${marketLabel(stock)}<span class="nl-report-code">${escapeHTML(stock.code)}</span><span class="nl-report-context">${escapeHTML(sector.name)} · 以下为分析思路示例，非该股票的实时判断</span></div><div class="nl-verdict"><span class="nl-verdict-label">${checkIcon}牛来观点 · 示例</span><h4>先观察，等更多信号确认</h4><p>先核实基本面与消息，再看量价是否配合。若只有热点升温，缺少经营与技术信号的支持，就不宜据此作出买入判断。</p></div><div class="nl-evidence">${evidence('01','行业资讯',sector.industry,sector.tags,'看基本面')}${evidence('02','热点新闻',sector.news,['公司公告','信息来源','业绩影响'],'核实事件')}${evidence('03','技术指标异动','可观察价格与 MA20 的关系、成交量变化及 MACD 等信号是否相互印证。若放量却未能维持突破，或量价走势背离，需要进一步核实，单一指标不代表确定的买卖时机。',['MA20','成交量','MACD'],'等信号确认')}</div><div class="nl-next-step"><h4>接下来，重点看这两件事</h4><p>① 对照最新公告与财报，核实消息是否影响经营。</p><p>② 结合多个时段的量价表现，确认信号是否持续。</p></div><div class="nl-report-actions"><button type="button" id="ask-another">换一只股票问问</button></div></article>`;
+    advice.innerHTML=window.NiulaiCharts ? window.NiulaiCharts.render(stock,marketLabel(stock)) : '<p class="nl-noscript">图表未能载入，请刷新页面重试。</p>';
     $('#advice-card').setAttribute('aria-busy','false');
     $('#ask-niulai').disabled=false;
     $('#ask-label').textContent='问牛来值不值得买';
     state.timer=null;
-    announce(`${stock.name}的演示分析已展示，包含行业资讯、热点新闻和技术指标异动三个部分。`);
+    announce(`${stock.name}的演示图表已展示，所有图表使用统一模拟样本，不是实际行情。`);
   }
 
   function startAdvice(stock) {
@@ -179,7 +192,7 @@
     $('#advice-card').setAttribute('aria-busy','true');
     $('#ask-niulai').disabled=true;
     $('#ask-label').textContent='牛来整理中…';
-    advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的演示分析</h3><p>把三个角度的思路放在一起</p><div class="nl-loading-tracks"><span>行业资讯</span><span>热点新闻</span><span>技术异动</span></div></div>`;
+    advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的演示分析</h3><p>量价走势 · 行业雷达 · 热点分布 · 技术信号</p><div class="nl-loading-tracks"><span>行业资讯</span><span>热点新闻</span><span>技术异动</span></div></div>`;
     announce(`正在整理${stock.name}的演示分析。`);
     state.timer=setTimeout(()=>{if(run===state.run && state.selected?.id===stock.id) renderReport(stock);},650);
     input.blur();
@@ -199,7 +212,7 @@
     if (exact.length===1) { startAdvice(exact[0].stock); return; }
     if (matches.length===1 && !matches[0].fuzzy) { startAdvice(matches[0].stock); return; }
     renderSuggestions();
-    if (!matches.length) showError('演示股票库中未找到这只股票，请换个名称或代码。');
+    if (!matches.length) showError('当前目录未找到，请核对市场和代码；新上市股票可能尚未更新。');
     else if (matches.every(item=>item.fuzzy)) showError('找到了相近名称，请点选确认你想问的股票。');
     else showError('有多只股票匹配，请点选一只，或补充股票代码。');
   }
@@ -242,6 +255,9 @@
     }
   });
   window.addEventListener('pagehide',()=>{if(state.timer) resetAdvice();});
-  $('#catalog-note').textContent=`演示股票库 ${stocks.length} 只 · 非全市场实时搜索`;
+  const missing=['CN','HK','US'].filter(m=>!loadedMarkets.includes(m));
+  $('#catalog-note').textContent=missing.length ? `${missing.map(m=>marketNames[m]).join('、')}完整目录加载失败，暂用常用股票` : `已收录 ${stocks.length.toLocaleString('zh-CN')} 只 · 目录快照`;
+  $('#catalog-coverage').innerHTML=['CN','HK','US'].map(m=>`<div><strong>${marketNames[m]}</strong><span>${marketStocks[m].length.toLocaleString('zh-CN')} 只</span><time>${loadedMarkets.includes(m)?escapeHTML(directory[m].date):'样例备用'}</time></div>`).join('')+(missing.length?'<button type="button" id="reload-directory">重新加载目录</button>':'');
+  $('#reload-directory')?.addEventListener('click',()=>window.location.reload());
   renderQuickPicks();
 })();

@@ -1,0 +1,63 @@
+{
+  "collectedAt": "2026-09-18",
+  "dates": {
+    "CN": "2026-09-18",
+    "HK": "2026-09-18",
+    "US": "2026-09-17"
+  },
+  "counts": {
+    "CN": 5565,
+    "HK": 2823,
+    "US": 5728
+  },
+  "beijingUnverified": [
+    {
+      "code": "920025",
+      "name": "凯达重工"
+    },
+    {
+      "code": "920157",
+      "name": "宇特光电"
+    },
+    {
+      "code": "920201",
+      "name": "百瑞吉"
+    },
+    {
+      "code": "920202",
+      "name": "安达股份"
+    },
+    {
+      "code": "920229",
+      "name": "世纪数码"
+    }
+  ],
+  "scope": "沪深北 A 股、港交所股本证券与 REIT、美股交易所普通股/ADR/REIT 等权益证券；不含全球其他市场、OTC、ETF、优先股、债券、权证及退市证券。目录为快照，新上市或更名需刷新。",
+  "sources": [
+    {
+      "name": "上海证券交易所",
+      "url": "https://www.sse.com.cn/assortment/stock/list/share/"
+    },
+    {
+      "name": "深圳证券交易所",
+      "url": "https://www.szse.cn/market/stock/company/"
+    },
+    {
+      "name": "巨潮资讯（北交所代码）",
+      "url": "https://www.cninfo.com.cn/"
+    },
+    {
+      "name": "腾讯行情（北交所代码核验）",
+      "url": "https://gu.qq.com/"
+    },
+    {
+      "name": "香港交易所",
+      "url": "https://www.hkex.com.hk/Services/Trading/Securities/Securities-Lists?sc_lang=zh-HK"
+    },
+    {
+      "name": "Nasdaq Trader（含其他美股交易所）",
+      "url": "https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs"
+    }
+  ],
+  "usExcludedCount": 1783
+}

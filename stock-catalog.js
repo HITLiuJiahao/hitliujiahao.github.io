@@ -1,4 +1,4 @@
-/* A small, local demonstration catalogue, not a live security master or quote feed. */
+/* Curated Chinese names and aliases enrich the generated full market directories. */
 (() => {
   'use strict';
   const rows = [
@@ -105,18 +105,5 @@
     id:`${market}:${code}`,market,code,name,initials,pinyin,sector,aliases,
     exchange:market === 'CN' ? (code.startsWith('6') ? '沪市' : code.startsWith('9') ? '北交所' : '深市') : market === 'HK' ? '港股' : '美股'
   }));
-  // These are conditional educational templates. They do not assert current market conditions.
-  const sectors = {
-    chips:{name:'半导体',industry:'关注订单、产能利用率和盈利预期是否同步改善。只有行业需求真正转化为公司收入，景气预期才更有依据。',news:'核实新品发布、产能扩张和客户订单的公告来源，区分技术进展与已经兑现的商业收入。',tags:['订单变化','产能利用率','盈利预期']},
-    consumer:{name:'消费',industry:'关注终端需求、渠道库存和利润率的变化。品牌热度需要与实际销量及现金流相互验证。',news:'对产品提价、促销和消费政策等信息，先确认正式公告，再观察是否真正影响收入和利润。',tags:['终端需求','渠道库存','现金流']},
-    finance:{name:'金融服务',industry:'结合具体业务，关注盈利质量、资产风险和市场活跃度。对银行、保险、券商及交易平台，应使用各自适用的指标。',news:'区分政策预期与正式落地，对业绩、分红和监管信息，优先核对公司及监管机构的原始公告。',tags:['盈利质量','资产风险','业务指标']},
-    ev:{name:'汽车与新能源',industry:'关注交付或出货量、单价与毛利率是否协调改善。销量增长不一定等于利润增长，还需观察竞争和现金流。',news:'核实新产品、订单及产业政策的适用范围，区分意向订单、实际交付和已经确认的收入。',tags:['出货与交付','毛利率','竞争格局']},
-    internet:{name:'互联网与服务',industry:'关注用户需求、收入增长和投入效率。业务热度需要结合利润率及现金流，判断能否持续转化为经营成果。',news:'对新业务、合作或产品发布，核实信息出处与具体条款，避免将社交媒体热度直接当作业绩增量。',tags:['收入增长','投入效率','现金流']},
-    industry:{name:'工业制造',industry:'关注在手订单、交付进度、成本和回款。订单增长需要与产能、利润率及应收账款质量一起看。',news:'核实合同规模、履约周期和业绩影响，区分框架协议、正式订单与已经交付的项目。',tags:['订单质量','交付进度','成本与回款']},
-    health:{name:'医药健康',industry:'关注研发进展、商业化能力与现金流。不同研发阶段的项目存在不同的不确定性，需要结合公司实际业务判断。',news:'对临床试验、监管审批和授权合作，核实阶段、适应症及条款，不把单一进展直接等同于未来利润。',tags:['研发进展','商业化','现金储备']},
-    energy:{name:'能源与资源',industry:'结合具体业务，关注供需、产品价格、成本与现金流。不同能源和资源品的周期并不相同，不能用同一个景气判断套用。',news:'核实政策、产能、资源项目和价格变动的信息来源，判断其影响是短期扰动还是持续变化。',tags:['供需变化','成本结构','现金流']},
-    software:{name:'软件服务',industry:'关注客户需求、合同转化与盈利质量。技术概念需要通过真实客户、收入和回款得到验证。',news:'核实产品发布、合作关系和项目订单的实质内容，区分技术展示、试点项目与商业落地。',tags:['客户需求','收入转化','合同与回款']},
-    hardware:{name:'硬件与设备',industry:'关注产品需求、出货量、库存和利润率。还要观察主要客户或产品的集中度，避免只看新品预期。',news:'对新品、供应链合作和扩产消息，先核实公司公告，再判断订单规模、交付时间和盈利影响。',tags:['产品需求','库存变化','利润率']}
-  };
-  window.NiulaiCatalog = Object.freeze({stocks:Object.freeze(stocks),sectors:Object.freeze(sectors)});
+  window.NiulaiCatalog = Object.freeze({stocks:Object.freeze(stocks)});
 })();
