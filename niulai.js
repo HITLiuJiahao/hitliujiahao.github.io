@@ -194,7 +194,7 @@
     $('#advice-card').setAttribute('aria-busy','true');
     $('#ask-niulai').disabled=true;
     $('#ask-label').textContent='牛来整理中…';
-    advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的资料</h3><p>优先读取缓存，必要时更新腾讯公开数据</p><div class="nl-loading-tracks"><span>行业资讯</span><span>热点新闻</span><span>价格与成交量</span></div></div>`;
+    advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的资料</h3><div class="nl-loading-tracks"><span>价格与成交量</span><span>行业资讯</span><span>热点新闻</span></div></div>`;
     announce(`正在整理${stock.name}的资料。`);
     input.blur();
     const motion=window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
@@ -270,7 +270,7 @@
   });
   window.addEventListener('pagehide',()=>{if(state.controller) resetAdvice();});
   const missing=['CN','HK','US'].filter(m=>!loadedMarkets.includes(m));
-  $('#catalog-note').textContent=missing.length ? `${missing.map(m=>marketNames[m]).join('、')}完整目录加载失败，暂用常用股票` : `已收录 ${stocks.length.toLocaleString('zh-CN')} 只 · 目录快照`;
+  $('#catalog-note').textContent=missing.length ? `${missing.map(m=>marketNames[m]).join('、')}完整目录加载失败，暂用常用股票` : `股票目录 · ${stocks.length.toLocaleString('zh-CN')} 只`;
   $('#catalog-coverage').innerHTML=['CN','HK','US'].map(m=>`<div><strong>${marketNames[m]}</strong><span>${marketStocks[m].length.toLocaleString('zh-CN')} 只</span><time>${loadedMarkets.includes(m)?escapeHTML(directory[m].date):'常用备用'}</time></div>`).join('')+(missing.length?'<button type="button" id="reload-directory">重新加载目录</button>':'');
   $('#reload-directory')?.addEventListener('click',()=>window.location.reload());
   renderQuickPicks();

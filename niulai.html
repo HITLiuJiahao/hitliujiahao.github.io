@@ -8,7 +8,7 @@
   <title>问牛来 · 股票值得买吗</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4844'/%3E%3Cpath d='m5 24 7-8 5 4 9-13m-7 1 8-2-1 8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="niulai.css?v=5">
+  <link rel="stylesheet" href="niulai.css?v=6">
   <script src="stock-catalog.js" defer></script>
   <script src="stock-directory-cn.js?v=3" defer></script>
   <script src="stock-directory-cn-2.js?v=3" defer></script>
@@ -22,8 +22,8 @@
   <script src="stock-market-map.js?v=5" defer></script>
   <script src="niulai-quotes.js?v=5" defer></script>
   <script src="niulai-data.js?v=5" defer></script>
-  <script src="niulai-charts.js?v=5" defer></script>
-  <script src="niulai.js?v=5" defer></script>
+  <script src="niulai-charts.js?v=6" defer></script>
+  <script src="niulai.js?v=6" defer></script>
 </head>
 <body>
   <div class="app-shell niulai-shell">
@@ -34,14 +34,11 @@
         <span>返回</span>
       </a>
       <span class="niulai-page-title">问牛来</span>
-      <span class="nl-header-tag">选股助手</span>
     </header>
     <main class="niulai-page-content" id="niulai-main">
       <section class="nl-hero" aria-labelledby="niulai-heading">
         <div class="nl-hero-copy">
-          <span class="nl-eyebrow"><span></span> 选股多一点依据</span>
           <h1 id="niulai-heading">股票是不是值得买？<br><strong>问牛来！</strong></h1>
-          <p>读资讯 · 看热点 · 看变化</p>
         </div>
         <img class="nl-hero-mascot" src="assets/niulai.jpg" alt="牛来拿着平板，向你竖起大拇指" width="1254" height="1254" decoding="async">
       </section>
@@ -49,7 +46,6 @@
       <section class="nl-card nl-search-card" aria-labelledby="search-heading">
         <div class="nl-card-heading">
           <h2 id="search-heading">选一只你关心的股票</h2>
-          <span class="nl-subtle-tag">三大市场</span>
         </div>
         <form id="stock-form" novalidate>
           <div class="nl-market-filters" role="group" aria-label="筛选股票市场">
@@ -71,7 +67,7 @@
               <p class="nl-no-matches" id="no-matches" hidden></p>
             </div>
           </div>
-          <p class="nl-search-help" id="search-help">支持名称、代码和拼音首字母</p>
+          <p class="nl-sr-only" id="search-help">支持名称、代码和拼音首字母</p>
           <p class="nl-search-error" id="search-error" role="alert" hidden></p>
           <div class="nl-selected-stock" id="selected-stock" hidden></div>
           <div class="nl-quick-picks"><span>试试</span><div id="quick-picks"></div></div>
@@ -80,31 +76,28 @@
             <span id="ask-label">问牛来值不值得买</span>
             <svg class="icon nl-button-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
           </button>
-          <p class="nl-catalog-note" id="catalog-note" role="status">正在载入股票目录…</p>
-          <details class="nl-catalog-details"><summary>收录范围与数据来源 <span>›</span></summary><div id="catalog-coverage"></div><p>收录沪深北 A 股、港股及美股交易所权益证券。暂不含其他国家市场、OTC、ETF、债券、权证和退市证券；少量特殊证券仅收录标识，可能暂无有效报价；新上市或更名需更新目录。</p><p>沪深港及美股采用交易所公开名单，北交所采用巨潮资讯名单并核验腾讯行情代码。美股支持代码、英文名称及部分常用中文别名。</p><div class="nl-source-links"><a href="https://www.sse.com.cn/assortment/stock/list/share/" target="_blank" rel="noopener noreferrer">上交所</a><a href="https://www.szse.cn/market/stock/company/" target="_blank" rel="noopener noreferrer">深交所</a><a href="https://www.cninfo.com.cn/" target="_blank" rel="noopener noreferrer">巨潮资讯</a><a href="https://www.hkex.com.hk/Services/Trading/Securities/Securities-Lists?sc_lang=zh-HK" target="_blank" rel="noopener noreferrer">港交所</a><a href="https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs" target="_blank" rel="noopener noreferrer">Nasdaq</a></div></details>
+          <details class="nl-catalog-details"><summary><b id="catalog-note" role="status">正在载入股票目录…</b> <span aria-hidden="true">›</span></summary><div id="catalog-coverage"></div><p>沪深北 A 股、港股及美股交易所证券；少量特殊证券可能暂无报价。新上市或更名需更新目录。</p><p>名单来源：交易所、巨潮资讯及腾讯行情。</p><div class="nl-source-links"><a href="https://www.sse.com.cn/assortment/stock/list/share/" target="_blank" rel="noopener noreferrer">上交所</a><a href="https://www.szse.cn/market/stock/company/" target="_blank" rel="noopener noreferrer">深交所</a><a href="https://www.cninfo.com.cn/" target="_blank" rel="noopener noreferrer">巨潮资讯</a><a href="https://www.hkex.com.hk/Services/Trading/Securities/Securities-Lists?sc_lang=zh-HK" target="_blank" rel="noopener noreferrer">港交所</a><a href="https://www.nasdaqtrader.com/Trader.aspx?id=SymbolDirDefs" target="_blank" rel="noopener noreferrer">Nasdaq</a></div></details>
         </form>
       </section>
 
       <section class="nl-card nl-advice-card" id="advice-card" aria-labelledby="advice-heading" aria-busy="false">
         <div class="nl-card-heading">
           <div class="nl-advice-title"><span class="nl-avatar"><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></span><h2 id="advice-heading">牛来建议</h2></div>
-          <span class="nl-demo-tag nl-real-tag">真实资料 · 规则解读</span>
+          <span class="nl-demo-tag nl-real-tag">规则解读</span>
         </div>
         <div id="advice-content">
           <div class="nl-empty-advice">
             <h3>选好股票，牛来帮你理思路</h3>
-            <p>把生意、消息和交易变化放在一起看。</p>
             <div class="nl-perspectives">
-              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8h7v13M11 4h9v17M8 12H7m1 4H7m8-8h1m-1 4h1m-1 4h1M2 21h20"/></svg></span><strong>行业资讯</strong><span>了解行业动态</span></div>
-              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3c1 5-3 5-2 9 2 0 3-2 3-4 4 4 5 7 3 10-3 5-10 3-11-1-1-4 2-6 3-8 0 3 1 3 2 3"/></svg></span><strong>热点新闻</strong><span>读懂新消息</span></div>
-              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v16h18M6 15l4-5 4 3 6-7m-5 0h5v5"/></svg></span><strong>技术异动</strong><span>看交易变化</span></div>
+              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v16h18M6 15l4-5 4 3 6-7m-5 0h5v5"/></svg></span><strong>价格与成交量</strong></div>
+              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8h7v13M11 4h9v17M8 12H7m1 4H7m8-8h1m-1 4h1m-1 4h1M2 21h20"/></svg></span><strong>行业资讯</strong></div>
+              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3c1 5-3 5-2 9 2 0 3-2 3-4 4 4 5 7 3 10-3 5-10 3-11-1-1-4 2-6 3-8 0 3 1 3 2 3"/></svg></span><strong>热点新闻</strong></div>
             </div>
             <button class="nl-example-button" id="show-example" type="button">先选一只看看 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
           </div>
         </div>
-        <p class="nl-advice-disclaimer">资料来自腾讯公开来源，可能延迟或缺失；图表和阅读提示由本站按固定规则整理，尚未接入大模型，不构成买卖建议。</p>
+        <p class="nl-advice-disclaimer">数据可能延迟，不构成买卖建议。</p>
       </section>
-      <footer class="nl-page-footer"><span class="nl-footer-line"></span><span>多一份了解，少一份盲目</span><span class="nl-footer-line"></span><p>独立学习项目 · 非腾讯官方服务</p></footer>
       <p id="niulai-status" class="nl-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
       <noscript><p class="nl-noscript">请启用浏览器 JavaScript，以使用股票搜索和资料图表。</p></noscript>
     </main>
