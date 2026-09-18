@@ -9,7 +9,9 @@
 - `index.html`：微证券风格首页，行情榜单、开户和交易等仍是演示交互。
 - `niulai.html`：股票联想搜索与真实公开资料图表，可从首页“立即进入”打开。
 - [线上首页](https://hitliujiahao.github.io/)
-- [牛来页面 v9](https://hitliujiahao.github.io/niulai.html?v=9)
+- [牛来页面 v10](https://hitliujiahao.github.io/niulai.html?v=10)
+
+v10 的默认“试试”快捷入口为腾讯控股、贵州茅台、特斯拉。
 
 ## 牛来资料与图表
 

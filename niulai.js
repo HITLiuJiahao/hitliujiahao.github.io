@@ -20,7 +20,7 @@
   const advice = $('#advice-content');
   const emptyAdvice = advice.innerHTML;
   const marketNames = {CN:'A 股',HK:'港股',US:'美股'};
-  const preferred = {all:['HK:00700','CN:600519','US:NVDA'],CN:['CN:600519','CN:300750','CN:600584'],HK:['HK:00700','HK:01810','HK:09988'],US:['US:NVDA','US:AAPL','US:TSLA']};
+  const preferred = {all:['HK:00700','CN:600519','US:TSLA'],CN:['CN:600519','CN:300750','CN:600584'],HK:['HK:00700','HK:01810','HK:09988'],US:['US:NVDA','US:AAPL','US:TSLA']};
   const stockById = new Map(stocks.map(stock => [stock.id,stock]));
   const state = {market:'all',selected:null,matches:[],active:-1,composing:false,run:0,controller:null};
   const normalize = value => String(value).normalize('NFKC').trim().toUpperCase().replace(/[\s·]/g,'');
