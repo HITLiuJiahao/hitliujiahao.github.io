@@ -225,10 +225,10 @@
 .nl-cache-details p{padding:.25rem 0}
 .nl-cache-details>div{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px solid #f1f3f7;padding:.25rem 0}
 .nl-cache-details>div>span:last-child{text-align:right}
-.nl-visual-verdict{padding:.75rem .8125rem;min-height:5.25rem}
+.nl-visual-verdict{padding:.75rem .8125rem;min-height:5.25rem;gap:.5rem}
 .nl-visual-verdict>div{min-width:0;flex:1}
 .nl-visual-verdict h4{font-size:.9375rem;letter-spacing:0}
-.nl-visual-verdict img{width:4.75rem;height:4.75rem;margin:0 -.5rem 0 -.25rem}
+.nl-visual-verdict img{width:4.75rem;height:4.75rem;margin:0 -.25rem 0 0}
 .nl-visual-verdict p{letter-spacing:0;font-size:.625rem}
 .nl-chart-heading h4{font-size:.84375rem;gap:.375rem}
 .nl-chart-tabs button{min-width:2.3125rem;padding:.3125rem}

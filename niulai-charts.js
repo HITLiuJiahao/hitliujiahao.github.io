@@ -9,7 +9,7 @@
   const svg=(label,body,height=164)=>`<svg xmlns="http://www.w3.org/2000/svg" class="nl-chart-svg" viewBox="0 0 320 ${height}" role="img" aria-label="${escape(label)}"><title>${escape(label)}</title>${body}</svg>`;
   const path=(values,x,y)=>{let started=false;return values.map((v,i)=>{if(!Number.isFinite(v)){started=false;return '';}const command=started?'L':'M';started=true;return `${command}${x(i).toFixed(2)},${y(v).toFixed(2)}`;}).join(' ');};
   const time=value=>new Date(value).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
-  let report=null,view={days:20,point:19,indicator:'MACD'},metrics=null;
+  let report=null,view={days:20,point:19,indicator:'MACD'},metrics=null,verdict=null;
   const missing=message=>`<div class="nl-data-missing"><span>暂缺</span><p>${escape(message)}</p></div>`;
   const caption=(n,title,extra='')=>`<div class="nl-chart-heading"><h4><span>${n}</span>${title}</h4>${extra}</div>`;
   function currentQuote(){
@@ -121,18 +121,20 @@
   }
   function dataDetails(){
     const sections=report.sections,m=sections.market?.data;
-    return `<details class="nl-cache-details"><summary>数据详情</summary>${Object.entries({quote:'最新报价',market:'历史走势',profile:'公司资料',news:'个股新闻',industryNews:'行业资讯'}).filter(([key])=>key in sections).map(([key,label])=>{const s=sections[key];return `<div><span>${label}</span><span>${s?.data?`${time(s.fetchedAt)} 获取${s.stale?' · 已过期':s.via==='cache'?' · 已缓存':''}`:'暂缺'}${s?.error?' · 更新未成功':''}</span></div>`;}).join('')}<p>获取时间为北京时间，不代表内容发布时间。当前浏览器缓存：量价 5 分钟、新闻 15 分钟、公司资料 24 小时；手动刷新间隔 30 秒。${window.NiulaiCache.info().persistent?'':'无法持久保存，仅本次有效。'}</p>${m?`<p>图表由日线计算。${m.basis==='未复权'?'未复权走势会受分红、拆股影响。':''}RSI 采用近 14 日涨跌额简单平均口径，非 Wilder 平滑；MACD 参数为 12、26、9。</p>`:''}</details>`;
+    const e=verdict?.evidence;
+    const reasoning=verdict?.asOf?`<p>一句话参考 ${escape(verdict.asOf)} 及之前的收盘数据${e?.partialExcluded?'，不含末日未确认收盘的数据':''}。${e?`价格比 20 日均价${e.distance>=0?'高':'低'} ${number(Math.abs(e.distance))}%，均价近 5 日${e.slope>=0?'升':'降'} ${number(Math.abs(e.slope))}%；MACD 的 DIF ${number(e.dif)}、DEA ${number(e.dea)}，RSI14 ${number(e.rsi,1)}，成交量为此前 5 日均量的 ${number(e.volume)} 倍。`:''}</p>`:'';
+    return `<details class="nl-cache-details"><summary>数据详情</summary>${Object.entries({quote:'最新报价',market:'历史走势',profile:'公司资料',news:'个股新闻',industryNews:'行业资讯'}).filter(([key])=>key in sections).map(([key,label])=>{const s=sections[key];return `<div><span>${label}</span><span>${s?.data?`${time(s.fetchedAt)} 获取${s.stale?' · 已过期':s.via==='cache'?' · 已缓存':''}`:'暂缺'}${s?.error?' · 更新未成功':''}</span></div>`;}).join('')}<p>获取时间为北京时间，不代表内容发布时间。当前浏览器缓存：量价 5 分钟、新闻 15 分钟、公司资料 24 小时；手动刷新间隔 30 秒。${window.NiulaiCache.info().persistent?'':'无法持久保存，仅本次有效。'}</p>${reasoning}<p>一句话由技术规则生成，未接入大模型，未回测，不判断公司估值，也未综合新闻或个人情况。腾讯采用正向措辞，判断条件与其他股票相同。</p>${m?`<p>图表由日线计算。${m.basis==='未复权'?'未复权走势会受分红、拆股影响。':''}RSI 采用近 14 日涨跌额简单平均口径，非 Wilder 平滑；MACD 参数为 12、26、9。</p>`:''}</details>`;
   }
   function render(stock,marketLabel,data,{updating=false}={}){
     const sameStock=report?.stock.id===stock.id;report=data;metrics=window.NiulaiData.calculate(report.sections.market?.data);if(!sameStock)view={days:20,point:19,indicator:'MACD'};
     const m=report.sections.market?.data;
-    const headline=metrics.distance===null?'先把这家公司看明白':`价格${metrics.distance>=0?'高于':'低于'}近期平均水平`;
+    verdict=window.NiulaiVerdict?.evaluate(stock,m,{updating})||{state:'unavailable',headline:'暂时无法判断是否值得买',asOf:null};
     const quote=quoteCard();
     const old=m && Date.now()-Date.parse(m.bars.at(-1).date)>10*86400000;
     return `<article class="nl-report nl-visual-report">
       <div class="nl-report-stock"><h3>${escape(stock.name)}</h3>${marketLabel}<span class="nl-report-code">${escape(stock.code)}</span></div>
       ${quote}${cachePanel(updating)}
-      <div class="nl-visual-verdict"><div><span>牛来解读</span><h4>${headline}</h4></div><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></div>
+      <div class="nl-visual-verdict" data-verdict="${escape(verdict.state)}"><div><span>牛来观点 · 技术面${verdict.asOf?`<time datetime="${escape(verdict.asOf)}"> · ${escape(verdict.asOf.slice(5))} 收盘</time>`:''}</span><h4>${verdict.headline.split('，').map(escape).join('，<br>')}</h4></div><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></div>
       <section class="nl-chart-panel">
         ${caption('01','价格和成交量怎么变',`<div class="nl-chart-tabs" role="group" aria-label="走势时间范围"><button type="button" data-trend-days="20" class="${view.days===20?'is-active':''}" aria-pressed="${view.days===20}">20 日</button><button type="button" data-trend-days="60" class="${view.days===60?'is-active':''}" aria-pressed="${view.days===60}">60 日</button></div>`)}
         ${old?'<p class="nl-coverage-note">历史行情日期较早，请核对。</p>':''}
