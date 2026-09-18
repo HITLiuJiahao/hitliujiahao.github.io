@@ -9,7 +9,7 @@
   const svg=(label,body,height=164)=>`<svg xmlns="http://www.w3.org/2000/svg" class="nl-chart-svg" viewBox="0 0 320 ${height}" role="img" aria-label="${escape(label)}"><title>${escape(label)}</title>${body}</svg>`;
   const path=(values,x,y)=>{let started=false;return values.map((v,i)=>{if(!Number.isFinite(v)){started=false;return '';}const command=started?'L':'M';started=true;return `${command}${x(i).toFixed(2)},${y(v).toFixed(2)}`;}).join(' ');};
   const time=value=>new Date(value).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
-  let report=null,view={days:20,point:19,indicator:'MACD'},metrics=null,verdict=null;
+  let report=null,view={days:20,point:19},metrics=null,verdict=null;
   const missing=message=>`<div class="nl-data-missing"><span>暂缺</span><p>${escape(message)}</p></div>`;
   const caption=(n,title,extra='')=>`<div class="nl-chart-heading"><h4><span>${n}</span>${title}</h4>${extra}</div>`;
   function currentQuote(){
@@ -103,11 +103,11 @@
     const distance=metrics.distance,ratio=metrics.volumeRatio;
     return `<div class="nl-signal-cards"><div><span>相比近 20 日均价</span><strong>${distance===null?'数据不足':`${distance>=0?'高':'低'} ${number(Math.abs(distance))}%`}</strong></div><div><span>成交比平常活跃吗</span><strong>${ratio===null?'数据不足':number(ratio)+' 倍'}</strong>${ratio===null?'':`<p>${escape(metrics.volumeDate)} · 对比此前 5 日均量</p>`}</div></div>`;
   }
-  function technical(){
+  function technical(indicator){
     const market=report.sections.market?.data,bars=market?.bars||[];
     if(bars.length<35)return missing('交易日不足，指标暂缺');
     const n=Math.min(30,bars.length-26),x=i=>8+i/(n-1)*264;
-    if(view.indicator==='RSI'){
+    if(indicator==='RSI'){
       const values=metrics.rsi.slice(-n),y=v=>15+(100-v)/100*95;
       return `${svg('RSI14 涨跌强弱图。30和70为参考线，不是买卖指令。',[30,70].map(v=>`<path d="M8 ${y(v)}H280" stroke="#dfe3ed" stroke-dasharray="3 3"/>${text(316,y(v)+3,v,'text-anchor="end"')}`).join('')+`<path d="${path(values,x,y)}" class="nl-line" stroke="${red}"/>${text(8,134,`RSI14：${number(values.at(-1),1)}`)}`,143)}<p class="nl-chart-footnote">30 / 70 为参考线</p>`;
     }
@@ -126,7 +126,7 @@
     return `<details class="nl-cache-details"><summary>数据详情</summary>${Object.entries({quote:'最新报价',market:'历史走势',profile:'公司资料',news:'个股新闻',industryNews:'行业资讯'}).filter(([key])=>key in sections).map(([key,label])=>{const s=sections[key];return `<div><span>${label}</span><span>${s?.data?`${time(s.fetchedAt)} 获取${s.stale?' · 已过期':s.via==='cache'?' · 已缓存':''}`:'暂缺'}${s?.error?' · 更新未成功':''}</span></div>`;}).join('')}<p>获取时间为北京时间，不代表内容发布时间。当前浏览器缓存：量价 5 分钟、新闻 15 分钟、公司资料 24 小时；手动刷新间隔 30 秒。${window.NiulaiCache.info().persistent?'':'无法持久保存，仅本次有效。'}</p>${reasoning}<p>一句话由技术规则生成，未接入大模型，未回测，不判断公司估值，也未综合新闻或个人情况。腾讯采用正向措辞，判断条件与其他股票相同。</p>${m?`<p>图表由日线计算。${m.basis==='未复权'?'未复权走势会受分红、拆股影响。':''}RSI 采用近 14 日涨跌额简单平均口径，非 Wilder 平滑；MACD 参数为 12、26、9。</p>`:''}</details>`;
   }
   function render(stock,marketLabel,data,{updating=false}={}){
-    const sameStock=report?.stock.id===stock.id;report=data;metrics=window.NiulaiData.calculate(report.sections.market?.data);if(!sameStock)view={days:20,point:19,indicator:'MACD'};
+    const sameStock=report?.stock.id===stock.id;report=data;metrics=window.NiulaiData.calculate(report.sections.market?.data);if(!sameStock)view={days:20,point:19};
     const m=report.sections.market?.data;
     verdict=window.NiulaiVerdict?.evaluate(stock,m,{updating})||{state:'unavailable',headline:'暂时无法判断是否值得买',asOf:null};
     const quote=quoteCard();
@@ -139,7 +139,10 @@
         ${caption('01','价格和成交量怎么变',`<div class="nl-chart-tabs" role="group" aria-label="走势时间范围"><button type="button" data-trend-days="20" class="${view.days===20?'is-active':''}" aria-pressed="${view.days===20}">20 日</button><button type="button" data-trend-days="60" class="${view.days===60?'is-active':''}" aria-pressed="${view.days===60}">60 日</button></div>`)}
         ${old?'<p class="nl-coverage-note">历史行情日期较早，请核对。</p>':''}
         <div id="nl-trend-chart">${trend()}</div>${signals()}
-        ${m?`<details class="nl-more-data nl-technical-details"><summary>技术指标</summary><div class="nl-indicator-tabs" role="group" aria-label="切换技术指标"><button type="button" data-indicator="MACD" class="${view.indicator==='MACD'?'is-active':''}" aria-pressed="${view.indicator==='MACD'}">涨跌速度 · MACD</button><button type="button" data-indicator="RSI" class="${view.indicator==='RSI'?'is-active':''}" aria-pressed="${view.indicator==='RSI'}">涨跌强弱 · RSI</button></div><div id="nl-technical-chart">${technical()}</div></details>`:''}
+        ${m?`<div class="nl-technical-charts">
+          <section class="nl-technical-block" aria-labelledby="nl-macd-heading"><h5 id="nl-macd-heading">涨跌速度 · MACD</h5><div id="nl-macd-chart">${technical('MACD')}</div></section>
+          <section class="nl-technical-block" aria-labelledby="nl-rsi-heading"><h5 id="nl-rsi-heading">涨跌强弱 · RSI</h5><div id="nl-rsi-chart">${technical('RSI')}</div></section>
+        </div>`:''}
         ${stamp(report.sections.market)}
       </section>
       <section class="nl-chart-panel">${caption('02','行业和生意怎么样')}${industry()}</section>
@@ -150,10 +153,9 @@
     </article>`;
   }
   document.addEventListener('click',event=>{
-    const days=event.target.closest('[data-trend-days]'),indicator=event.target.closest('[data-indicator]');
+    const days=event.target.closest('[data-trend-days]');
     if(!report)return;
     if(days){view.days=Number(days.dataset.trendDays);view.point=view.days-1;document.querySelectorAll('[data-trend-days]').forEach(b=>{b.classList.toggle('is-active',b===days);b.setAttribute('aria-pressed',String(b===days));});document.querySelector('#nl-trend-chart').innerHTML=trend();}
-    if(indicator){view.indicator=indicator.dataset.indicator;document.querySelectorAll('[data-indicator]').forEach(b=>{b.classList.toggle('is-active',b===indicator);b.setAttribute('aria-pressed',String(b===indicator));});document.querySelector('#nl-technical-chart').innerHTML=technical();}
   });
   document.addEventListener('input',event=>{
     if(!event.target.matches('[data-trend-cursor]')||!report)return;

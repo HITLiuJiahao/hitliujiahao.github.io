@@ -199,9 +199,6 @@
 .nl-heat-caption{display:flex;align-items:center;justify-content:space-between;font-size:.65625rem;color:#9aa3b4;margin:.25rem 0 .1875rem}
 .nl-heat-caption strong{font-size:.9375rem;color:#d98e82;font-weight:500}
 .nl-heat-caption small{font-size:.59375rem;color:#adb3c0;font-weight:400}
-.nl-indicator-tabs{display:flex;gap:.375rem;margin:-.125rem 0 .8125rem}
-.nl-indicator-tabs button{padding:.4375rem .875rem;color:#929db0;font-size:.6875rem;background:#f6f7fa;border-radius:.3125rem;border:1px solid transparent}
-.nl-indicator-tabs button.is-active{background:#fff5f0;color:#d28377;border-color:#f6e8e1}
 .nl-indicator-readout{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:1.375rem;margin-bottom:.375rem;flex-wrap:wrap}
 .nl-indicator-readout>strong{font-size:.625rem;font-weight:500;color:#8b97ab;font-variant-numeric:tabular-nums}
 .nl-visual-report .nl-report-actions{padding:1rem 0 .5rem}
@@ -271,8 +268,8 @@
 .nl-signal-cards span{font-size:.625rem;color:#929bae;display:block}
 .nl-signal-cards strong{font-size:1rem;color:#6c7a92;font-weight:500;line-height:1.8;display:block;margin:.25rem 0}
 .nl-signal-cards p{font-size:.59375rem;line-height:1.8;color:#9aa4b5}
-.nl-technical-details{border-top:1px dashed #e8ecf4;padding-top:.5rem;margin-top:.75rem}
-.nl-technical-details .nl-indicator-tabs{margin:.625rem 0}.nl-technical-details .nl-indicator-tabs button{padding:.4375rem .625rem;font-size:.625rem}
+.nl-technical-block{border-top:1px solid #edf0f5;padding-top:.875rem;margin-top:1rem}
+.nl-technical-block h5{margin:0 0 .625rem;font-size:.78125rem;font-weight:500;color:#636e83}
 .nl-report-source{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.59375rem;line-height:1.8;flex-wrap:wrap;padding-top:.75rem;color:#a1a9b7}
 .nl-report-source a{color:#9b8c89;text-decoration:underline;text-underline-offset:.1875rem}
 @media(max-width:360px){.nl-chart-heading h4{font-size:.78125rem}.nl-visual-verdict h4{font-size:.84375rem}.nl-visual-verdict img{width:4rem;height:4rem}.nl-chart-tabs button{min-width:2rem}.nl-signal-cards>div{padding:.625rem .4375rem}}
