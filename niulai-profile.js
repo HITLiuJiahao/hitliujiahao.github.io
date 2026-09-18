@@ -14,12 +14,12 @@
       {id:'unsure',title:'还没想好',caption:'',label:'暂不确定'}
     ]},
     { key:'drawdownTolerance', name:'回落底线', title:'涨跌起伏，你能接受多少回落？', subtitle:'假设投资账户最高到过 1 万元', options:[
-      {id:'none',title:'不接受回落',caption:'0 元 · 0%',label:'不接受回落',remaining:10000},
-      {id:'pct_5',title:'最多回落 500 元',caption:'5%',label:'最多回落 5%',remaining:9500},
-      {id:'pct_10',title:'最多回落 1,000 元',caption:'10%',label:'最多回落 10%',remaining:9000},
-      {id:'pct_20',title:'最多回落 2,000 元',caption:'20%',label:'最多回落 20%',remaining:8000},
-      {id:'over_20',title:'可以超过 2,000 元',caption:'20% 以上',label:'可接受 20% 以上'},
-      {id:'unsure',title:'还拿不准',caption:'',label:'暂不确定'}
+      {id:'none',title:'不接受回落',caption:'0% · 保持 10,000 元',label:'不接受回落'},
+      {id:'pct_5',title:'最多回落 500 元',caption:'5% · 剩 9,500 元',label:'最多回落 5%'},
+      {id:'pct_10',title:'最多回落 1,000 元',caption:'10% · 剩 9,000 元',label:'最多回落 10%'},
+      {id:'pct_20',title:'最多回落 2,000 元',caption:'20% · 剩 8,000 元',label:'最多回落 20%'},
+      {id:'over_20',title:'可以超过 2,000 元',caption:'20% 以上 · 上限未定',label:'可接受 20% 以上'},
+      {id:'unsure',title:'还拿不准',caption:'先不设置底线',label:'暂不确定'}
     ]},
     { key:'investmentBudget', name:'投资总预算', title:'你准备拿多少钱用于投资？', subtitle:'只选总预算区间 · 按人民币折算', options:[
       {id:'under_10k',title:'不足 1 万元',caption:'',label:'不足 1 万'},
@@ -30,7 +30,7 @@
       {id:'private',title:'暂不透露',caption:'',label:'暂不透露'}
     ]}
   ];
-  const fieldLabels = ['计划持有','回落承受','总预算（元）'];
+  const fieldLabels = ['计划持有','回落承受','投资总预算（元）'];
   const emptyAnswers = () => Object.fromEntries(questions.map(question => [question.key,null]));
   const choice = (answers,index) => questions[index].options.find(option => option.id===answers[questions[index].key]);
   function validate(raw) {
@@ -53,6 +53,7 @@
   let saveAttempted=false;
   let fallbackInert=false;
   let previousInert=false;
+  let advanceTimer=null;
 
   function element(tag,text,className) {
     const node=document.createElement(tag);
@@ -60,11 +61,17 @@
     if (className) node.className=className;
     return node;
   }
-  function pace(answers) {
-    if (answers.holdingPeriod==='under_1_month') return '你的节奏：灵活观察';
-    if (answers.holdingPeriod==='months_1_6') return '你的节奏：边走边看';
-    if (['months_6_12','year_plus'].includes(answers.holdingPeriod)) return '你的节奏：耐心观察';
-    return '你的偏好，牛来记下了';
+  function persona(answers) {
+    // A playful description of stated preferences, never a budget-based risk score.
+    const tolerance=answers.drawdownTolerance,holding=answers.holdingPeriod;
+    if (tolerance==='none') return {name:'安心派',caption:'先把自己的回落底线放在心上'};
+    if (tolerance==='pct_5') return {name:'稳稳党',caption:'波动小一点，心里更踏实'};
+    if (tolerance==='unsure' || holding==='unsure') return {name:'探索派',caption:'慢慢摸索，找到舒服的投资节奏'};
+    if (holding==='year_plus') return {name:'长跑派',caption:'愿意多陪一程，也接受沿途起伏'};
+    if (holding==='months_6_12') return {name:'耐心派',caption:'不急着下结论，愿意多看一段'};
+    if (tolerance==='pct_10') return {name:'稳中有数派',caption:'先划好回落底线，再观察走势'};
+    if (holding==='under_1_month') return {name:'灵活派',caption:'喜欢短期观察，也接受些起伏'};
+    return {name:'节奏派',caption:'先看一段走势，按自己的节奏来'};
   }
   function renderSummary(target,answers) {
     target.replaceChildren(...questions.map((question,index)=>{
@@ -75,11 +82,18 @@
   }
   function renderCard() {
     $('#profile-optional').hidden=Boolean(profile);
-    $('#profile-intro').textContent=profile ? pace(profile) : '3 个小选择，让牛来更懂你';
+    $('#profile-intro').hidden=Boolean(profile);
+    $('#profile-persona').hidden=!profile;
+    $('#profile-card').classList.toggle('is-complete',Boolean(profile));
     $('#profile-open-label').textContent=profile ? '修改' : '去填写';
     $('#profile-saved').hidden=!profile;
     $('#profile-saved').replaceChildren();
-    if (profile) renderSummary($('#profile-saved'),profile);
+    if (profile) {
+      const title=persona(profile);
+      $('#profile-nickname').textContent=title.name;
+      $('#profile-persona-caption').textContent=title.caption;
+      renderSummary($('#profile-saved'),profile);
+    }
     $('#profile-storage-note').hidden=!(profile && memoryOnly);
     $('#profile-storage-note').textContent='本次可用，浏览器未能保存这次填写。';
   }
@@ -87,23 +101,12 @@
     $('#profile-dialog-notice').hidden=!text;
     $('#profile-dialog-notice').textContent=text;
   }
-  function renderScenario() {
-    const box=$('#profile-scenario');
-    const selected=choice(draft,1);
-    box.hidden=screen!=='questions' || step!==1 || !selected;
-    box.replaceChildren();
-    if (box.hidden) return;
-    if (selected.remaining!==undefined) {
-      const amounts=element('div',undefined,'nl-profile-scenario-amounts');
-      const peak=element('div');peak.append(element('span','账户最高'),element('strong','10,000 元'));
-      const floor=element('div');floor.append(element('span','最低可接受'),element('strong',selected.remaining.toLocaleString('zh-CN')+' 元'));
-      const arrow=element('span','→');arrow.setAttribute('aria-hidden','true');
-      amounts.append(peak,arrow,floor);box.append(amounts);
-    } else {
-      box.textContent=selected.id==='over_20' ? '已记下：可接受超过 20% 的回落，具体上限尚未设置。' : '没关系，牛来先不替你设定底线。';
-    }
+  function cancelAdvance() {
+    if (advanceTimer!==null) window.clearTimeout(advanceTimer);
+    advanceTimer=null;
   }
   function render(focusHeading=false) {
+    cancelAdvance();
     const isQuestion=screen==='questions';
     const isResult=screen==='result';
     const question=questions[step];
@@ -111,7 +114,11 @@
     $('#profile-options').hidden=!isQuestion;
     $('#profile-result').hidden=!isResult;
     $('#profile-clear').hidden=!profile || screen==='clear';
-    $('#profile-next').disabled=false;
+    dialog.dataset.screen=screen;
+    $('#profile-confirm').hidden=isQuestion;
+    $('#profile-auto-hint').hidden=!isQuestion;
+    $('#profile-result-label').hidden=!isResult;
+    $('#profile-result-mascot').hidden=!isResult;
     notice();
     $('#profile-options').replaceChildren();
     if (isQuestion) {
@@ -119,8 +126,7 @@
       $('#profile-dialog-title').textContent=question.title;
       $('#profile-subtitle').textContent=question.subtitle;
       $('#profile-back').textContent=step===0 ? '稍后再说' : '上一步';
-      $('#profile-next').textContent=step===2 ? '生成我的习惯卡' : '下一步';
-      $('#profile-next').disabled=!choice(draft,step);
+      $('#profile-auto-hint').textContent=step===2 ? '点选即可生成习惯卡' : '点选即可继续';
       $('#profile-progress').querySelectorAll('span').forEach((bar,index)=>bar.classList.toggle('is-complete',index<=step));
       question.options.forEach(option=>{
         const button=element('button',undefined,'nl-profile-option');
@@ -131,21 +137,21 @@
         $('#profile-options').append(button);
       });
     } else if (isResult) {
+      const title=persona(draft);
       $('#profile-step-label').textContent='你的投资习惯卡';
-      $('#profile-dialog-title').textContent=pace(draft);
-      $('#profile-subtitle').textContent='确认这三个小习惯，之后随时可以调整';
+      $('#profile-dialog-title').textContent=title.name;
+      $('#profile-subtitle').textContent=title.caption;
       renderSummary($('#profile-result'),draft);
       $('#profile-back').textContent='调整一下';
-      $('#profile-next').textContent=saveAttempted ? '本次使用，去选股' : '保存，去选股票';
+      $('#profile-confirm').textContent=saveAttempted ? '本次使用，去选股' : '保存，去选股票';
       if (saveAttempted) notice('浏览器未能保存，本次仍可使用；刷新后可能恢复此前设置。');
     } else {
       $('#profile-step-label').textContent='管理投资习惯卡';
       $('#profile-dialog-title').textContent='清除这张投资习惯卡？';
       $('#profile-subtitle').textContent='只清除本机保存的偏好，之后可以重新填写。';
       $('#profile-back').textContent='保留';
-      $('#profile-next').textContent='确认清除';
+      $('#profile-confirm').textContent='确认清除';
     }
-    renderScenario();
     if (focusHeading) {
       $('#profile-dialog-body').scrollTop=0;
       $('#profile-dialog-title').focus({preventScroll:true});
@@ -165,6 +171,7 @@
     $('#profile-dialog-title').focus({preventScroll:true});
   }
   function close(toSearch=false) {
+    cancelAdvance();
     if (typeof dialog.close==='function') dialog.close(); else dialog.removeAttribute('open');
     if (fallbackInert) {$('.niulai-shell').inert=previousInert;fallbackInert=false;}
     if (toSearch) {
@@ -190,12 +197,21 @@
   dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
   $('#profile-options').addEventListener('click',event=>{
     const button=event.target.closest('[data-profile-option]');
-    if (!button || screen!=='questions') return;
+    if (!button || screen!=='questions' || advanceTimer!==null || event.detail>1) return;
     const selected=questions[step].options.find(option=>option.id===button.dataset.profileOption);
     if (!selected) return;
     draft[questions[step].key]=selected.id;saveAttempted=false;
-    render();
-    $('#profile-options').querySelector(`[data-profile-option="${selected.id}"]`).focus({preventScroll:true});
+    $('#profile-options').querySelectorAll('button').forEach(option=>{
+      option.setAttribute('aria-pressed',String(option===button));
+      option.disabled=true;
+    });
+    // Brief selection feedback also prevents a double tap from answering two questions.
+    advanceTimer=window.setTimeout(()=>{
+      advanceTimer=null;
+      if (!dialog.open || screen!=='questions') return;
+      if (step<questions.length-1) step++; else screen='result';
+      render(true);
+    },260);
   });
   $('#profile-back').addEventListener('click',()=>{
     if (screen==='clear') screen=returnScreen;
@@ -204,19 +220,17 @@
     else {close();return;}
     render(true);
   });
-  $('#profile-next').addEventListener('click',()=>{
+  $('#profile-confirm').addEventListener('click',()=>{
     if (screen==='clear') {
       try {window.localStorage.removeItem(KEY);} catch {notice('浏览器未能清除记录，请重试或清理此网站的浏览器数据。');return;}
       profile=null;memoryOnly=false;draft=emptyAnswers();renderCard();
       $('#niulai-status').textContent='已清除本机保存的投资习惯。';close();return;
     }
     if (screen==='result') {save();return;}
-    if (!choice(draft,step)) return;
-    if (step<questions.length-1) step++; else screen='result';
-    render(true);
   });
   $('#profile-clear').addEventListener('click',()=>{returnScreen=screen;screen='clear';render(true);});
   dialog.addEventListener('keydown',event=>{
+    if (event.repeat && (event.key==='Enter' || event.key===' ')) {event.preventDefault();return;}
     if (event.key!=='Tab') return;
     const available=[...dialog.querySelectorAll('button:not([disabled]),a[href]')].filter(node=>!node.closest('[hidden]'));
     const first=available[0],last=available[available.length-1];
