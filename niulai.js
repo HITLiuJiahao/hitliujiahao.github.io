@@ -1,4 +1,4 @@
-/* Public security-directory snapshots; analysis remains a labelled visual demo. */
+/* Public security directory and cached, source-labelled stock information. */
 (() => {
   'use strict';
   const curated=window.NiulaiCatalog?.stocks || [];
@@ -22,7 +22,7 @@
   const marketNames = {CN:'A 股',HK:'港股',US:'美股'};
   const preferred = {all:['HK:00700','CN:600519','US:NVDA'],CN:['CN:600519','CN:300750','CN:600584'],HK:['HK:00700','HK:01810','HK:09988'],US:['US:NVDA','US:AAPL','US:TSLA']};
   const stockById = new Map(stocks.map(stock => [stock.id,stock]));
-  const state = {market:'all',selected:null,matches:[],active:-1,composing:false,run:0,timer:null};
+  const state = {market:'all',selected:null,matches:[],active:-1,composing:false,run:0,controller:null};
   const normalize = value => String(value).normalize('NFKC').trim().toUpperCase().replace(/[\s·]/g,'');
   const escapeHTML = value => String(value).replace(/[&<>"']/g,char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const checkIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
@@ -132,8 +132,8 @@
   }
 
   function resetAdvice() {
-    clearTimeout(state.timer);
-    state.timer=null;
+    state.controller?.abort();
+    state.controller=null;
     state.run++;
     advice.innerHTML=emptyAdvice;
     $('#advice-card').setAttribute('aria-busy','false');
@@ -177,27 +177,40 @@
     if (input.value && !state.selected) renderSuggestions(); else closeSuggestions();
   }
 
-  function renderReport(stock) {
-    advice.innerHTML=window.NiulaiCharts ? window.NiulaiCharts.render(stock,marketLabel(stock)) : '<p class="nl-noscript">图表未能载入，请刷新页面重试。</p>';
+  function renderReport(stock,data,{updating=false}={}) {
+    advice.innerHTML=window.NiulaiCharts ? window.NiulaiCharts.render(stock,marketLabel(stock),data,{updating}) : '<p class="nl-noscript">图表未能载入，请刷新页面重试。</p>';
+    if(updating)return;
     $('#advice-card').setAttribute('aria-busy','false');
     $('#ask-niulai').disabled=false;
     $('#ask-label').textContent='问牛来值不值得买';
-    state.timer=null;
-    announce(`${stock.name}的演示图表已展示，所有图表使用统一模拟样本，不是实际行情。`);
+    state.controller=null;
+    announce(`${stock.name}的数据已整理，已标注来源与数据时间，暂缺资料不会用模拟内容填充。`);
   }
 
-  function startAdvice(stock) {
+  async function startAdvice(stock,{force=false}={}) {
     selectStock(stock);
     const run=state.run;
+    const controller=new AbortController();state.controller=controller;
     $('#advice-card').setAttribute('aria-busy','true');
     $('#ask-niulai').disabled=true;
     $('#ask-label').textContent='牛来整理中…';
-    advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的演示分析</h3><p>量价走势 · 行业雷达 · 热点分布 · 技术信号</p><div class="nl-loading-tracks"><span>行业资讯</span><span>热点新闻</span><span>技术异动</span></div></div>`;
-    announce(`正在整理${stock.name}的演示分析。`);
-    state.timer=setTimeout(()=>{if(run===state.run && state.selected?.id===stock.id) renderReport(stock);},650);
+    advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的资料</h3><p>优先读取缓存，必要时更新腾讯公开数据</p><div class="nl-loading-tracks"><span>行业资讯</span><span>热点新闻</span><span>价格与成交量</span></div></div>`;
+    announce(`正在整理${stock.name}的资料。`);
     input.blur();
     const motion=window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-    $('#advice-card').scrollIntoView({behavior:motion,block:'start'});
+    if(!force)$('#advice-card').scrollIntoView({behavior:motion,block:'start'});
+    try {
+      if(!window.NiulaiData || !window.NiulaiCache)throw new Error('数据模块未能载入');
+      const cached=window.NiulaiData.peek(stock);
+      if(Object.values(cached.sections).some(section=>section?.data))renderReport(stock,cached,{updating:true});
+      const data=await window.NiulaiData.load(stock,{signal:controller.signal,force});
+      if(run===state.run && state.selected?.id===stock.id)renderReport(stock,data);
+    }catch(error){
+      if(error.name==='AbortError' || run!==state.run)return;
+      advice.innerHTML='<div class="nl-data-missing"><p>资料暂时无法整理，请点击重试。</p></div><button class="nl-example-button" id="refresh-data" type="button">重新获取资料</button>';
+      $('#advice-card').setAttribute('aria-busy','false');$('#ask-niulai').disabled=false;$('#ask-label').textContent='问牛来值不值得买';state.controller=null;
+      announce('资料暂时无法整理，可以重试。');
+    }
   }
 
   function submitQuery() {
@@ -250,14 +263,15 @@
   document.addEventListener('pointerdown',event=>{if(!$('#search-wrap').contains(event.target)) closeSuggestions();});
   advice.addEventListener('click',event=>{
     if (event.target.closest('#show-example')) { const id=state.selected?.id || preferred[state.market][0];startAdvice(stockById.get(id)); }
+    if (event.target.closest('#refresh-data') && state.selected && !state.controller)startAdvice(state.selected,{force:true});
     if (event.target.closest('#ask-another')) {
       input.value='';onInput();$('#niulai-main').scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});input.focus({preventScroll:true});
     }
   });
-  window.addEventListener('pagehide',()=>{if(state.timer) resetAdvice();});
+  window.addEventListener('pagehide',()=>{if(state.controller) resetAdvice();});
   const missing=['CN','HK','US'].filter(m=>!loadedMarkets.includes(m));
   $('#catalog-note').textContent=missing.length ? `${missing.map(m=>marketNames[m]).join('、')}完整目录加载失败，暂用常用股票` : `已收录 ${stocks.length.toLocaleString('zh-CN')} 只 · 目录快照`;
-  $('#catalog-coverage').innerHTML=['CN','HK','US'].map(m=>`<div><strong>${marketNames[m]}</strong><span>${marketStocks[m].length.toLocaleString('zh-CN')} 只</span><time>${loadedMarkets.includes(m)?escapeHTML(directory[m].date):'样例备用'}</time></div>`).join('')+(missing.length?'<button type="button" id="reload-directory">重新加载目录</button>':'');
+  $('#catalog-coverage').innerHTML=['CN','HK','US'].map(m=>`<div><strong>${marketNames[m]}</strong><span>${marketStocks[m].length.toLocaleString('zh-CN')} 只</span><time>${loadedMarkets.includes(m)?escapeHTML(directory[m].date):'常用备用'}</time></div>`).join('')+(missing.length?'<button type="button" id="reload-directory">重新加载目录</button>':'');
   $('#reload-directory')?.addEventListener('click',()=>window.location.reload());
   renderQuickPicks();
 })();

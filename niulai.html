@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="牛来选股问答演示：搜索 A 股、港股和美股，从行业资讯、热点新闻和技术异动三个角度了解股票。">
+  <meta name="description" content="问牛来：搜索 A 股、港股和美股，用腾讯公开资料、新闻与量价图表了解股票。支持缓存和数据时间核对。">
   <title>问牛来 · 股票值得买吗</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4844'/%3E%3Cpath d='m5 24 7-8 5 4 9-13m-7 1 8-2-1 8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="niulai.css?v=3">
+  <link rel="stylesheet" href="niulai.css?v=4">
   <script src="stock-catalog.js" defer></script>
   <script src="stock-directory-cn.js?v=3" defer></script>
   <script src="stock-directory-cn-2.js?v=3" defer></script>
@@ -18,12 +18,14 @@
   <script src="stock-directory-us.js?v=3" defer></script>
   <script src="stock-directory-us-2.js?v=3" defer></script>
   <script src="stock-directory-us-3.js?v=3" defer></script>
-  <script src="niulai-charts.js?v=3" defer></script>
-  <script src="niulai.js?v=3" defer></script>
+  <script src="niulai-cache.js?v=4" defer></script>
+  <script src="niulai-data.js?v=4" defer></script>
+  <script src="niulai-charts.js?v=4" defer></script>
+  <script src="niulai.js?v=4" defer></script>
 </head>
 <body>
   <div class="app-shell niulai-shell">
-    <p class="demo-notice">非腾讯官方，仅供学习演示</p>
+    <p class="demo-notice">独立学习项目 · 非腾讯官方</p>
     <header class="niulai-page-header">
       <a class="niulai-back" href="index.html" aria-label="返回腾讯微证券首页">
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>
@@ -37,7 +39,7 @@
         <div class="nl-hero-copy">
           <span class="nl-eyebrow"><span></span> 选股多一点依据</span>
           <h1 id="niulai-heading">股票是不是值得买？<br><strong>问牛来！</strong></h1>
-          <p>读资讯 · 看热点 · 识异动</p>
+          <p>读资讯 · 看热点 · 看变化</p>
         </div>
         <img class="nl-hero-mascot" src="assets/niulai.jpg" alt="牛来拿着平板，向你竖起大拇指" width="1254" height="1254" decoding="async">
       </section>
@@ -84,25 +86,25 @@
       <section class="nl-card nl-advice-card" id="advice-card" aria-labelledby="advice-heading" aria-busy="false">
         <div class="nl-card-heading">
           <div class="nl-advice-title"><span class="nl-avatar"><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></span><h2 id="advice-heading">牛来建议</h2></div>
-          <span class="nl-demo-tag">演示内容</span>
+          <span class="nl-demo-tag nl-real-tag">真实资料 · 规则解读</span>
         </div>
         <div id="advice-content">
           <div class="nl-empty-advice">
             <h3>选好股票，牛来帮你理思路</h3>
-            <p>用图表看趋势、行业与热点。</p>
+            <p>把生意、消息和交易变化放在一起看。</p>
             <div class="nl-perspectives">
-              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8h7v13M11 4h9v17M8 12H7m1 4H7m8-8h1m-1 4h1m-1 4h1M2 21h20"/></svg></span><strong>行业资讯</strong><span>了解基本面</span></div>
-              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3c1 5-3 5-2 9 2 0 3-2 3-4 4 4 5 7 3 10-3 5-10 3-11-1-1-4 2-6 3-8 0 3 1 3 2 3"/></svg></span><strong>热点新闻</strong><span>看懂催化因素</span></div>
-              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v16h18M6 15l4-5 4 3 6-7m-5 0h5v5"/></svg></span><strong>技术异动</strong><span>观察量价信号</span></div>
+              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8h7v13M11 4h9v17M8 12H7m1 4H7m8-8h1m-1 4h1m-1 4h1M2 21h20"/></svg></span><strong>行业资讯</strong><span>了解行业动态</span></div>
+              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3c1 5-3 5-2 9 2 0 3-2 3-4 4 4 5 7 3 10-3 5-10 3-11-1-1-4 2-6 3-8 0 3 1 3 2 3"/></svg></span><strong>热点新闻</strong><span>读懂新消息</span></div>
+              <div><span class="nl-perspective-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v16h18M6 15l4-5 4 3 6-7m-5 0h5v5"/></svg></span><strong>技术异动</strong><span>看交易变化</span></div>
             </div>
-            <button class="nl-example-button" id="show-example" type="button">先看一份示例 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            <button class="nl-example-button" id="show-example" type="button">先选一只看看 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
           </div>
         </div>
-        <p class="nl-advice-disclaimer">图表与观点均为模拟演示，未接入实时行情、资讯或大模型分析。</p>
+        <p class="nl-advice-disclaimer">资料来自腾讯公开来源，可能延迟或缺失；图表和阅读提示由本站按固定规则整理，尚未接入大模型，不构成买卖建议。</p>
       </section>
-      <footer class="nl-page-footer"><span class="nl-footer-line"></span><span>多一份了解，少一份盲目</span><span class="nl-footer-line"></span><p>演示内容不构成投资建议</p></footer>
+      <footer class="nl-page-footer"><span class="nl-footer-line"></span><span>多一份了解，少一份盲目</span><span class="nl-footer-line"></span><p>独立学习项目 · 非腾讯官方服务</p></footer>
       <p id="niulai-status" class="nl-sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
-      <noscript><p class="nl-noscript">请启用浏览器 JavaScript，以使用股票搜索和演示分析。</p></noscript>
+      <noscript><p class="nl-noscript">请启用浏览器 JavaScript，以使用股票搜索和资料图表。</p></noscript>
     </main>
   </div>
 </body>

@@ -205,3 +205,73 @@
 .nl-indicator-readout>strong{font-size:.625rem;font-weight:500;color:#8b97ab;font-variant-numeric:tabular-nums}
 .nl-visual-report .nl-report-actions{padding:1rem 0 .5rem}
 @media(max-width:360px){.nl-visual-verdict{padding:.75rem}.nl-visual-verdict img{width:4.75rem;height:4.75rem}.nl-visual-verdict h4{font-size:1.0625rem}.nl-news-layout{gap:.5rem}.nl-news-legend button{gap:.3125rem}}
+
+/* Source-backed reports: soft red accents, compact charts and readable captions. */
+.nl-real-tag{color:#ba766c;background:#fff2ee}
+.nl-live-quote{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-top:-.25rem;font-variant-numeric:tabular-nums}
+.nl-live-quote>strong{font-size:1.7rem;line-height:1.3;font-weight:600;letter-spacing:-.03rem}
+.nl-live-quote>span{font-size:1rem;font-weight:500}
+.nl-live-quote>small{font-size:.625rem;color:#8f98aa}
+.nl-data-stamp{font-size:.59375rem;line-height:1.7;color:#929bac;margin:.4375rem 0;overflow-wrap:anywhere}
+.nl-cache-toolbar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.6875rem 0 .1875rem;font-size:.65625rem;color:#8a96aa}
+.nl-cache-toolbar>span{display:flex;align-items:center;gap:.375rem}
+.nl-cache-toolbar i{height:.3125rem;width:.3125rem;border-radius:50%;background:#91ac9d;flex:none}
+.nl-cache-toolbar .is-stale{color:#b59266}.nl-cache-toolbar .is-stale i{background:#d5af76}
+.nl-cache-toolbar button{color:#d07e72;font-size:.65625rem;min-height:2rem;padding:.25rem .5rem;border:1px solid #f0dcd6;border-radius:.375rem;white-space:nowrap}
+.nl-cache-toolbar button:disabled{color:#b4a5a1;background:#fbf7f5}
+.nl-cache-details{color:#949bad;font-size:.625rem;line-height:1.8;margin-bottom:.875rem}
+.nl-cache-details summary{cursor:pointer;min-height:1.5rem}
+.nl-cache-details p{padding:.25rem 0}
+.nl-cache-details>div{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px solid #f1f3f7;padding:.25rem 0}
+.nl-cache-details>div>span:last-child{text-align:right}
+.nl-visual-verdict{padding:.875rem .8125rem}
+.nl-visual-verdict>div{min-width:0;flex:1}
+.nl-visual-verdict h4{font-size:.9375rem;letter-spacing:0}
+.nl-visual-verdict img{width:4.75rem;height:4.75rem;margin:0 -.5rem 0 -.25rem}
+.nl-visual-verdict p{letter-spacing:0;font-size:.625rem}
+.nl-chart-heading h4{font-size:.84375rem;gap:.375rem}
+.nl-chart-tabs button{min-width:2.3125rem;padding:.3125rem}
+.nl-chart-footnote{color:#909bae;line-height:1.8}
+.nl-data-missing{display:flex;align-items:center;gap:.625rem;background:#f8f9fc;border-radius:.5rem;padding:.875rem .75rem;color:#8e98aa;font-size:.71875rem;line-height:1.7;margin:.5rem 0}
+.nl-data-missing>span{font-size:.625rem;flex:none;border:1px solid #e2e6ed;padding:.125rem .25rem;border-radius:.25rem;color:#a1a9b8}
+.nl-data-missing p{margin:0}
+.nl-industry-chips{display:flex;gap:.375rem;flex-wrap:wrap;margin-bottom:.875rem}
+.nl-industry-chips span{font-size:.65625rem;padding:.25rem .5625rem;border-radius:.375rem;background:#fff4ef;color:#b88071}
+.nl-section-subhead{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.5rem 0 .625rem;font-size:.71875rem;color:#636e83}
+.nl-section-subhead strong{font-weight:500}.nl-section-subhead>span{font-size:.59375rem;color:#9aa3b3;flex:none}
+.nl-reading-hint{color:#8e99ac;font-size:.65625rem;line-height:1.8;margin:.5rem 0}
+.nl-revenue-bars{display:flex;flex-direction:column;gap:.625rem;padding:.5rem 0}
+.nl-revenue-bars>div>div:first-child{display:flex;justify-content:space-between;gap:.5rem;align-items:flex-start;font-size:.6875rem;color:#7d889d;margin-bottom:.3125rem}
+.nl-revenue-bars strong{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nl-revenue-bars span{overflow-wrap:anywhere;max-width:85%}
+.nl-revenue-track{height:.375rem;border-radius:1rem;background:#f3f5f9;overflow:hidden}
+.nl-revenue-track i{display:block;height:100%;border-radius:1rem;opacity:.78}
+.nl-financial-pair{display:grid;grid-template-columns:1fr 1fr;background:#f8f9fc;padding:.75rem .5rem;border-radius:.5rem;margin-top:.875rem}
+.nl-financial-pair>div{display:flex;flex-direction:column;gap:.375rem;text-align:center}
+.nl-financial-pair>div+div{border-left:1px solid #e8ecf3}.nl-financial-pair span{font-size:.625rem;color:#959fb1}
+.nl-financial-pair strong{font-size:1.125rem;font-weight:500;font-variant-numeric:tabular-nums}
+.nl-more-data{font-size:.6875rem;line-height:1.8;color:#8994a8;margin:.625rem 0}
+.nl-more-data summary{font-size:.6875rem;cursor:pointer;padding:.3125rem 0;color:#8795ad;min-height:1.75rem}
+.nl-more-data>p{font-size:.71875rem;line-height:1.9;padding:.375rem 0;color:#858fa1;overflow-wrap:anywhere}
+.nl-coverage-note{font-size:.625rem;line-height:1.8;color:#a1a8b8;padding:.5rem .625rem;border-radius:.3125rem;background:#f9f9fc;margin:.625rem 0}
+.nl-industry-news-heading{margin-top:1rem;padding-top:.6875rem;border-top:1px dashed #e9ecf3}
+.nl-news-timeline{list-style:none;margin:0;padding:0}
+.nl-news-timeline li{padding:.8125rem 0 .8125rem .875rem;position:relative;border-left:1px solid #edeff5;margin-left:.1875rem}
+.nl-news-timeline li:before{position:absolute;content:"";left:-.1875rem;top:1.0625rem;width:.3125rem;height:.3125rem;background:#e9b0a6;border-radius:50%;box-shadow:0 0 0 .1875rem #fff}
+.nl-news-meta{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.375rem;font-size:.59375rem;color:#a2aaba;font-variant-numeric:tabular-nums}
+.nl-news-meta>span{color:#c28e83;background:#fff5f1;border-radius:.1875rem;padding:.125rem .3125rem}
+.nl-news-timeline a,.nl-news-timeline li>strong{display:block;font-size:.8125rem;color:#5c667c;line-height:1.7;font-weight:500;text-decoration:none;overflow-wrap:anywhere}
+.nl-news-timeline a>span{color:#b4bdcc;font-size:.625rem}
+.nl-news-byline{font-size:.5625rem;color:#a3abbb;line-height:1.7;margin-top:.1875rem}
+.nl-news-question{font-size:.625rem;line-height:1.8;color:#9c8a81;margin-top:.375rem}
+.nl-news-question:before{content:"先看 ";color:#c18e7f}
+.nl-signal-cards{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.5rem 0}
+.nl-signal-cards>div{background:#f8f9fc;padding:.75rem .625rem;border-radius:.4375rem}
+.nl-signal-cards span{font-size:.625rem;color:#929bae;display:block}
+.nl-signal-cards strong{font-size:1rem;color:#6c7a92;font-weight:500;line-height:1.8;display:block;margin:.25rem 0}
+.nl-signal-cards p{font-size:.59375rem;line-height:1.8;color:#9aa4b5}
+.nl-technical-details{border-top:1px dashed #e8ecf4;padding-top:.5rem;margin-top:.75rem}
+.nl-technical-details .nl-indicator-tabs{margin:.625rem 0}.nl-technical-details .nl-indicator-tabs button{padding:.4375rem .625rem;font-size:.625rem}
+.nl-report-source{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.59375rem;line-height:1.8;flex-wrap:wrap;padding-top:.75rem;color:#a1a9b7}
+.nl-report-source a{color:#9b8c89;text-decoration:underline;text-underline-offset:.1875rem}
+@media(max-width:360px){.nl-chart-heading h4{font-size:.78125rem}.nl-visual-verdict h4{font-size:.84375rem}.nl-visual-verdict img{width:4rem;height:4rem}.nl-chart-tabs button{min-width:2rem}.nl-signal-cards>div{padding:.625rem .4375rem}}
