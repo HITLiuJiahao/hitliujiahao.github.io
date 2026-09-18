@@ -1,0 +1,58 @@
+/* Optional, locally stored investor preferences. */
+.nl-profile-card{margin-bottom:.8125rem;border-color:#f1e8e3;background:linear-gradient(120deg,#fff9f5,#fff);padding:.9375rem 1rem}
+.nl-profile-row{display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.nl-profile-copy{min-width:0}
+.nl-profile-copy h2{display:flex;align-items:center;gap:.4375rem;font-size:1rem;line-height:1.5;font-weight:600}
+.nl-profile-copy h2>span{font-size:max(.625rem,11px);font-weight:400;line-height:1.5;color:#a58e86}
+.nl-profile-copy>p{font-size:max(.71875rem,12px);line-height:1.6;color:#9393a2;margin-top:.3125rem}
+.nl-profile-entry{display:flex;align-items:center;justify-content:center;gap:.25rem;flex:none;min-height:44px;min-width:4.75rem;padding:0 .625rem;border:1px solid #f1dcd5;background:#fff5f1;color:#bc7465;border-radius:.5rem;font-size:max(.75rem,12px);font-weight:500}
+.nl-profile-entry .icon{width:.6875rem;height:.8125rem;stroke-width:1.6}
+.nl-profile-saved{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:.8125rem 0 0;padding-top:.75rem;border-top:1px solid #f3e9e4;gap:.625rem}
+.nl-profile-saved>div{min-width:0}
+.nl-profile-saved>div+div{border-left:1px solid #f2e7e1;padding-left:.625rem}
+.nl-profile-saved dt{font-size:max(.625rem,11px);color:#a08f88;line-height:1.5}
+.nl-profile-saved dd{margin:.25rem 0 0;font-size:max(.71875rem,12px);font-weight:500;color:#78645e;line-height:1.5;overflow-wrap:anywhere}
+.nl-profile-storage-note{font-size:max(.625rem,11px);color:#ad7860;line-height:1.6;margin-top:.625rem}
+.nl-profile-dialog{inset:auto 0 0;width:calc(100% - 1rem);max-width:25.875rem;max-height:90dvh;margin:0 auto;padding:0;border:1px solid #f0e7e1;border-radius:1rem 1rem 0 0;background:#fff;color:var(--ink);box-shadow:0 -.375rem 2rem #1e263018;overflow:hidden}
+.nl-profile-dialog[open]{display:flex;flex-direction:column}
+.nl-profile-dialog::backdrop{background:#24293860}
+.nl-profile-dialog-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex:none;padding:.875rem 1rem .625rem;background:linear-gradient(#fff8f5,#fff)}
+.nl-profile-guide{display:flex;align-items:center;gap:.5rem;font-size:max(.75rem,12px);color:#9c877e}
+.nl-profile-guide .nl-avatar{width:2.25rem;height:2.25rem}
+.nl-profile-guide .nl-avatar img{width:3rem;height:3rem;transform:translate(-.3125rem,-.1875rem)}
+.nl-profile-close{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;color:#a1a4af;margin-right:-.5rem}
+.nl-profile-close .icon{height:1.1875rem;width:1.1875rem;stroke-width:1.5}
+.nl-profile-dialog-body{overflow-y:auto;overscroll-behavior:contain;padding:0 1.125rem .625rem;min-height:0;scrollbar-width:thin}
+.nl-profile-progress{display:flex;gap:.3125rem;margin:.125rem 0 1.25rem}
+.nl-profile-progress span{height:3px;flex:1;background:#f1f2f6;border-radius:3px}
+.nl-profile-progress span.is-complete{background:#d9897b}
+.nl-profile-dialog h2{font-size:max(1.0625rem,16px);font-weight:600;line-height:1.6;margin:0 0 .3125rem;outline:none}
+.nl-profile-subtitle{font-size:max(.75rem,12px);color:#9b99a6;line-height:1.7;margin-bottom:1rem}
+.nl-profile-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.625rem}
+.nl-profile-option{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.3125rem;min-height:4.75rem;min-width:0;padding:.8125rem .625rem;text-align:left;border:1px solid #eeeef3;background:#fff;border-radius:.625rem;transition:background .15s,border-color .15s}
+.nl-profile-option>strong{font-size:max(.8125rem,13px);line-height:1.5;font-weight:500}
+.nl-profile-option>span{font-size:max(.6875rem,11px);line-height:1.5;color:#959aaa}
+.nl-profile-option[aria-pressed=true]{background:#fff5ef;border-color:#d98f80;box-shadow:inset 0 0 0 1px #d98f8050;color:#b36f61}
+.nl-profile-option[aria-pressed=true]>span{color:#ba8a7d}
+.nl-profile-option:last-child:nth-child(odd){grid-column:1/-1;min-height:44px}
+.nl-profile-scenario{margin-top:.875rem;background:#fff7f2;border-radius:.5625rem;padding:.8125rem;color:#ad7867;font-size:max(.75rem,12px);line-height:1.7}
+.nl-profile-scenario-amounts{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.nl-profile-scenario-amounts>div{display:flex;flex-direction:column;gap:.1875rem}
+.nl-profile-scenario-amounts span{font-size:max(.625rem,11px);color:#b09587}
+.nl-profile-scenario-amounts strong{font-size:1.125rem;font-weight:500;font-variant-numeric:tabular-nums}
+.nl-profile-result{margin:.875rem 0 0}
+.nl-profile-result>div{display:flex;justify-content:space-between;gap:1rem;padding:.875rem 0;border-bottom:1px solid #f1efee;font-size:max(.8125rem,13px);line-height:1.6}
+.nl-profile-result dt{color:#9b969a;flex:none}
+.nl-profile-result dd{margin:0;text-align:right;overflow-wrap:anywhere;font-weight:500}
+.nl-profile-dialog-notice{font-size:max(.71875rem,12px);line-height:1.7;color:#a67859;background:#fff8ee;padding:.625rem .75rem;border-radius:.375rem;margin:.75rem 0 0}
+.nl-profile-dialog-footer{padding:.6875rem 1.125rem max(.5rem,env(safe-area-inset-bottom));flex:none;background:#fff;border-top:1px solid #f7f5f3}
+.nl-profile-actions{display:flex;gap:.625rem}
+.nl-profile-back,.nl-profile-next{min-height:46px;padding:.6875rem .875rem;border-radius:.5625rem;font-size:max(.8125rem,13px);font-weight:500;line-height:1.5}
+.nl-profile-back{flex:none;background:#f6f7fa;color:#838b9d;min-width:4.75rem}
+.nl-profile-next{flex:1;background:#d47769;color:#fff}
+.nl-profile-next:disabled{background:#efc9bf;color:#fff;opacity:.8}
+.nl-profile-privacy{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:2.625rem;font-size:max(.625rem,11px);line-height:1.5;color:#b0a5a0}
+.nl-profile-privacy button{color:#a79992;min-height:44px;padding:.25rem 0 .25rem .5rem;font-size:inherit}
+@media(min-width:600px){.nl-profile-dialog{inset:0;margin:auto;border-radius:1rem;max-height:min(43rem,88dvh)}}
+@media(max-width:360px){.nl-hero{min-height:5.125rem}.nl-hero h1{font-size:1.1875rem}.nl-hero h1 strong{font-size:inherit}.nl-hero-mascot{width:4rem;height:4rem}.nl-profile-card{padding:.875rem}.nl-profile-entry{min-width:4.625rem;padding:0 .5rem}.nl-profile-row{gap:.375rem}.nl-profile-dialog{width:100%;max-width:100%}.nl-profile-dialog-body{padding-left:16px;padding-right:16px}.nl-profile-dialog-footer{padding-left:16px;padding-right:16px}.nl-profile-option{min-height:72px;padding:10px}}
+@media(prefers-reduced-motion:reduce){.nl-profile-option{transition:none}}
