@@ -6,22 +6,22 @@
   const dialog = $('#profile-dialog');
   if (!dialog) return;
   const questions = [
-    { key:'holdingPeriod', name:'投资节奏', title:'买入后，通常打算拿多久？', subtitle:'选一个最接近你的打算', options:[
-      {id:'under_1_month',title:'短期看看',caption:'少于 1 个月',label:'不到 1 个月'},
-      {id:'months_1_6',title:'看一段走势',caption:'1 个月至不足半年',label:'1—6 个月'},
-      {id:'months_6_12',title:'多点耐心',caption:'半年至不足 1 年',label:'6—12 个月'},
-      {id:'year_plus',title:'陪它走更久',caption:'1 年及以上',label:'1 年以上'},
+    { key:'holdingPeriod', name:'投资节奏', title:'买入后，通常打算拿多久？', subtitle:'', options:[
+      {id:'under_1_month',title:'少于 1 个月',caption:'短期看看',label:'不到 1 个月'},
+      {id:'months_1_6',title:'1 个月至不足半年',caption:'看一段走势',label:'1—6 个月'},
+      {id:'months_6_12',title:'半年至不足 1 年',caption:'多点耐心',label:'6—12 个月'},
+      {id:'year_plus',title:'1 年及以上',caption:'陪它走更久',label:'1 年以上'},
       {id:'unsure',title:'还没想好',caption:'',label:'暂不确定'}
     ]},
-    { key:'drawdownTolerance', name:'回落底线', title:'涨跌起伏，你能接受多少回落？', subtitle:'假设投资账户最高到过 1 万元', options:[
-      {id:'none',title:'不接受回落',caption:'0% · 保持 10,000 元',label:'不接受回落'},
-      {id:'pct_5',title:'最多回落 500 元',caption:'5% · 剩 9,500 元',label:'最多回落 5%'},
-      {id:'pct_10',title:'最多回落 1,000 元',caption:'10% · 剩 9,000 元',label:'最多回落 10%'},
-      {id:'pct_20',title:'最多回落 2,000 元',caption:'20% · 剩 8,000 元',label:'最多回落 20%'},
-      {id:'over_20',title:'可以超过 2,000 元',caption:'20% 以上 · 上限未定',label:'可接受 20% 以上'},
-      {id:'unsure',title:'还拿不准',caption:'先不设置底线',label:'暂不确定'}
+    { key:'volatilityAnxiety', name:'波动感受', title:'出现多大的波动时，您会感到焦虑？', subtitle:'按持有期间的价格涨跌幅选择', options:[
+      {id:'small',title:'不到 5%',caption:'',label:'不到 5%'},
+      {id:'pct_5',title:'5% 左右',caption:'',label:'约 5%'},
+      {id:'pct_10',title:'10% 左右',caption:'',label:'约 10%'},
+      {id:'pct_20',title:'20% 左右',caption:'',label:'约 20%'},
+      {id:'over_20',title:'超过 20%',caption:'',label:'超过 20%'},
+      {id:'unsure',title:'还拿不准',caption:'',label:'暂不确定'}
     ]},
-    { key:'investmentBudget', name:'投资总预算', title:'你准备拿多少钱用于投资？', subtitle:'只选总预算区间 · 按人民币折算', options:[
+    { key:'investmentBudget', name:'投资总预算', title:'你准备拿多少钱用于投资？', subtitle:'投资总预算 · 人民币', options:[
       {id:'under_10k',title:'不足 1 万元',caption:'',label:'不足 1 万'},
       {id:'10k_50k',title:'1 万—不足 5 万元',caption:'',label:'1 万—不足 5 万'},
       {id:'50k_200k',title:'5 万—不足 20 万元',caption:'',label:'5 万—不足 20 万'},
@@ -30,13 +30,16 @@
       {id:'private',title:'暂不透露',caption:'',label:'暂不透露'}
     ]}
   ];
-  const fieldLabels = ['计划持有','回落承受','投资总预算（元）'];
+  const legacyDrawdown={none:'不接受回落',pct_5:'最多回落 5%',pct_10:'最多回落 10%',pct_20:'最多回落 20%',over_20:'可接受 20% 以上',unsure:'暂不确定'};
   const emptyAnswers = () => Object.fromEntries(questions.map(question => [question.key,null]));
   const choice = (answers,index) => questions[index].options.find(option => option.id===answers[questions[index].key]);
   function validate(raw) {
-    if (!raw || raw.version!==1 || raw.currency!=='CNY' || !Number.isFinite(Date.parse(raw.updatedAt))) return null;
-    if (questions.some(question => !question.options.some(option => option.id===raw[question.key]))) return null;
-    return {version:1,currency:'CNY',...Object.fromEntries(questions.map(question=>[question.key,raw[question.key]])),updatedAt:new Date(raw.updatedAt).toISOString()};
+    if (!raw || ![1,2].includes(raw.version) || raw.currency!=='CNY' || !Number.isFinite(Date.parse(raw.updatedAt))) return null;
+    const fields=questions.filter(question=>raw.version===2 || question.key!=='volatilityAnxiety');
+    if (fields.some(question => !question.options.some(option => option.id===raw[question.key]))) return null;
+    if (raw.version===1 && !Object.hasOwn(legacyDrawdown,raw.drawdownTolerance)) return null;
+    // Old drawdown answers are preserved with their original meaning, never inferred as anxiety.
+    return {version:raw.version,currency:'CNY',...Object.fromEntries(fields.map(question=>[question.key,raw[question.key]])),...(raw.version===1?{drawdownTolerance:raw.drawdownTolerance}:{}),updatedAt:new Date(raw.updatedAt).toISOString()};
   }
   function readProfile() {
     try {
@@ -63,21 +66,89 @@
   }
   function persona(answers) {
     // A playful description of stated preferences, never a budget-based risk score.
-    const tolerance=answers.drawdownTolerance,holding=answers.holdingPeriod;
-    if (tolerance==='none') return {name:'安心派',caption:'先把自己的回落底线放在心上'};
-    if (tolerance==='pct_5') return {name:'稳稳党',caption:'波动小一点，心里更踏实'};
-    if (tolerance==='unsure' || holding==='unsure') return {name:'探索派',caption:'慢慢摸索，找到舒服的投资节奏'};
-    if (holding==='year_plus') return {name:'长跑派',caption:'愿意多陪一程，也接受沿途起伏'};
-    if (holding==='months_6_12') return {name:'耐心派',caption:'不急着下结论，愿意多看一段'};
-    if (tolerance==='pct_10') return {name:'稳中有数派',caption:'先划好回落底线，再观察走势'};
-    if (holding==='under_1_month') return {name:'灵活派',caption:'喜欢短期观察，也接受些起伏'};
-    return {name:'节奏派',caption:'先看一段走势，按自己的节奏来'};
+    const tolerance=answers.version===1?answers.drawdownTolerance:answers.volatilityAnxiety,holding=answers.holdingPeriod;
+    if (tolerance==='none' || tolerance==='small') return '安心派';
+    if (tolerance==='pct_5') return '稳稳党';
+    if (tolerance==='unsure' || holding==='unsure') return '探索派';
+    if (holding==='year_plus') return '长跑派';
+    if (holding==='months_6_12') return '耐心派';
+    if (tolerance==='pct_10') return '稳中有数派';
+    if (holding==='under_1_month') return '灵活派';
+    return '节奏派';
+  }
+  function svgNode(tag,attributes,text) {
+    const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,String(value)));
+    if (text!==undefined) node.textContent=text;
+    return node;
+  }
+  function graphic(label,className) {
+    const node=element('div',undefined,className);
+    node.setAttribute('role','img');node.setAttribute('aria-label',label);
+    return node;
+  }
+  function timeChart(answers) {
+    const option=choice(answers,0),known=answers.holdingPeriod!=='unsure';
+    const chart=graphic('计划持有：'+option.label,'nl-profile-time-chart');
+    if (!known) chart.append(element('span','暂不确定','nl-profile-unknown'));
+    const track=element('div',undefined,'nl-profile-time-track');
+    const labels=['< 1 月','1—6 月','6—12 月','1 年+'];
+    questions[0].options.slice(0,4).forEach((item,index)=>{
+      const stop=element('div',undefined,'nl-profile-time-stop');
+      const selected=item.id===answers.holdingPeriod;
+      stop.classList.toggle('is-selected',selected);
+      stop.append(element('i',selected?'✓':''),element('span',labels[index]));track.append(stop);
+    });
+    chart.append(track);return chart;
+  }
+  function volatilityChart(answers) {
+    const legacy=answers.version===1;
+    const selected=legacy?answers.drawdownTolerance:answers.volatilityAnxiety;
+    const known=selected!=='unsure';
+    const label=legacy?legacyDrawdown[selected]:choice(answers,1).label;
+    const chart=graphic((legacy?'回落承受：':'波动到以下幅度时开始焦虑：')+label,'nl-profile-gauge');
+    const svg=svgNode('svg',{viewBox:'0 0 136 94','aria-hidden':'true',focusable:'false'});
+    const arc='M16 68 A52 52 0 0 1 120 68';
+    svg.append(svgNode('path',{d:arc,class:'nl-profile-gauge-track'}));
+    if (known) {
+      const point={none:0,small:5,pct_5:5,pct_10:10,pct_20:20,over_20:20}[selected];
+      svg.append(svgNode('path',{d:arc,pathLength:100,'stroke-dasharray':`${point*5} 100`,class:'nl-profile-gauge-fill'}));
+      if (selected!=='small') {
+        const angle=point/20*Math.PI;
+        svg.append(svgNode('circle',{cx:68-52*Math.cos(angle),cy:68-52*Math.sin(angle),r:4,class:'nl-profile-gauge-dot'}));
+      }
+      if (selected==='over_20') svg.append(svgNode('path',{d:'m124 63 5 5-5 5',class:'nl-profile-gauge-more'}));
+    }
+    const values=legacy?{none:'0%',pct_5:'≤ 5%',pct_10:'≤ 10%',pct_20:'≤ 20%',over_20:'> 20%',unsure:'未定'}:{small:'< 5%',pct_5:'约 5%',pct_10:'约 10%',pct_20:'约 20%',over_20:'> 20%',unsure:'未定'};
+    svg.append(svgNode('text',{x:68,y:57,class:'nl-profile-gauge-value','text-anchor':'middle'},values[selected]));
+    svg.append(svgNode('text',{x:68,y:75,class:'nl-profile-gauge-caption','text-anchor':'middle'},known?(legacy?'回落底线':'开始焦虑'):'暂不确定'));
+    svg.append(svgNode('text',{x:16,y:91,class:'nl-profile-gauge-tick','text-anchor':'middle'},'0%'),svgNode('text',{x:120,y:91,class:'nl-profile-gauge-tick','text-anchor':'middle'},'20%'));
+    chart.append(svg);return chart;
+  }
+  function budgetChart(answers) {
+    const option=choice(answers,2),known=answers.investmentBudget!=='private';
+    const chart=graphic('投资总预算，人民币：'+option.label,'nl-profile-budget-chart');
+    chart.append(element('strong',option.label,'nl-profile-budget-value'));
+    if (known) {
+      const track=element('div',undefined,'nl-profile-budget-track');
+      questions[2].options.slice(0,5).forEach(item=>{
+        const bar=element('span');
+        if (item.id===answers.investmentBudget) {bar.className='is-selected';bar.textContent='•';}
+        track.append(bar);
+      });
+      const ends=element('div',undefined,'nl-profile-budget-ends');ends.append(element('span','< 1 万'),element('span','50 万+'));
+      chart.append(track,ends);
+    } else {
+      const lock=svgNode('svg',{viewBox:'0 0 24 24','aria-hidden':'true',focusable:'false',class:'nl-profile-budget-private'});
+      lock.append(svgNode('rect',{x:5,y:10,width:14,height:11,rx:3}),svgNode('path',{d:'M8 10V7a4 4 0 0 1 8 0v3m-4 5v2'}));chart.append(lock);
+    }
+    return chart;
   }
   function renderSummary(target,answers) {
-    target.replaceChildren(...questions.map((question,index)=>{
-      const row=element('div');
-      row.append(element('dt',fieldLabels[index]),element('dd',choice(answers,index)?.label || '暂未填写'));
-      return row;
+    const entries=[['计划持有','time',timeChart(answers)],[answers.version===1?'回落承受':'波动感受','volatility',volatilityChart(answers)],['总预算（元）','budget',budgetChart(answers)]];
+    target.replaceChildren(...entries.map(([label,type,chart])=>{
+      const row=element('div',undefined,'nl-profile-metric nl-profile-metric-'+type),value=element('dd');
+      value.append(chart);row.append(element('dt',label),value);return row;
     }));
   }
   function renderCard() {
@@ -89,9 +160,7 @@
     $('#profile-saved').hidden=!profile;
     $('#profile-saved').replaceChildren();
     if (profile) {
-      const title=persona(profile);
-      $('#profile-nickname').textContent=title.name;
-      $('#profile-persona-caption').textContent=title.caption;
+      $('#profile-nickname').textContent=persona(profile);
       renderSummary($('#profile-saved'),profile);
     }
     $('#profile-storage-note').hidden=!(profile && memoryOnly);
@@ -115,10 +184,12 @@
     $('#profile-result').hidden=!isResult;
     $('#profile-clear').hidden=!profile || screen==='clear';
     dialog.dataset.screen=screen;
+    dialog.dataset.question=isQuestion?question.key:'';
     $('#profile-confirm').hidden=isQuestion;
     $('#profile-auto-hint').hidden=!isQuestion;
     $('#profile-result-label').hidden=!isResult;
     $('#profile-result-mascot').hidden=!isResult;
+    $('#profile-subtitle').hidden=isResult || (isQuestion && !question.subtitle);
     notice();
     $('#profile-options').replaceChildren();
     if (isQuestion) {
@@ -137,10 +208,9 @@
         $('#profile-options').append(button);
       });
     } else if (isResult) {
-      const title=persona(draft);
       $('#profile-step-label').textContent='你的投资习惯卡';
-      $('#profile-dialog-title').textContent=title.name;
-      $('#profile-subtitle').textContent=title.caption;
+      $('#profile-dialog-title').textContent=persona(draft);
+      $('#profile-subtitle').textContent='';
       renderSummary($('#profile-result'),draft);
       $('#profile-back').textContent='调整一下';
       $('#profile-confirm').textContent=saveAttempted ? '本次使用，去选股' : '保存，去选股票';
@@ -159,7 +229,7 @@
   }
   function open() {
     if (dialog.open) return;
-    draft=profile ? Object.fromEntries(questions.map(question=>[question.key,profile[question.key]])) : emptyAnswers();
+    draft=profile ? Object.fromEntries(questions.map(question=>[question.key,profile[question.key]??null])) : emptyAnswers();
     step=0;screen='questions';saveAttempted=false;
     render();
     if (typeof dialog.showModal==='function') dialog.showModal();
@@ -181,7 +251,7 @@
   }
   function save() {
     if (saveAttempted) {close(true);return;}
-    const next=validate({version:1,currency:'CNY',...draft,updatedAt:new Date().toISOString()});
+    const next=validate({version:2,currency:'CNY',...draft,updatedAt:new Date().toISOString()});
     if (!next) {screen='questions';render(true);return;}
     try {
       window.localStorage.setItem(KEY,JSON.stringify(next));
