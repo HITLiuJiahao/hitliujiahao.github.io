@@ -9,7 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4844'/%3E%3Cpath d='m5 24 7-8 5 4 9-13m-7 1 8-2-1 8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css?v=11">
   <link rel="stylesheet" href="niulai.css?v=14">
-  <link rel="stylesheet" href="niulai-profile.css?v=16">
+  <link rel="stylesheet" href="niulai-profile.css?v=17">
   <script src="stock-catalog.js" defer></script>
   <script src="stock-directory-cn.js?v=3" defer></script>
   <script src="stock-directory-cn-2.js?v=3" defer></script>
@@ -26,7 +26,7 @@
   <script src="niulai-verdict.js?v=7" defer></script>
   <script src="niulai-charts.js?v=9" defer></script>
   <script src="niulai.js?v=10" defer></script>
-  <script src="niulai-profile.js?v=16" defer></script>
+  <script src="niulai-profile.js?v=17" defer></script>
 </head>
 <body>
   <div class="app-shell niulai-shell">
@@ -46,7 +46,7 @@
         <img class="nl-hero-mascot" src="assets/niulai.jpg" alt="牛来拿着平板，向你竖起大拇指" width="1254" height="1254" decoding="async">
       </section>
 
-      <section class="nl-card nl-profile-card" id="profile-card" aria-labelledby="profile-heading">
+      <section class="nl-card nl-profile-card" id="profile-card" aria-labelledby="profile-heading" tabindex="-1">
         <div class="nl-profile-row">
           <div class="nl-profile-copy">
             <h2 id="profile-heading">投资习惯卡 <span id="profile-optional">选填</span></h2>
@@ -56,7 +56,7 @@
         </div>
         <div class="nl-profile-persona" id="profile-persona" hidden>
           <div class="nl-profile-name-row"><h3 id="profile-nickname"></h3><span class="nl-profile-fun-label">趣味称号</span></div>
-          <img src="assets/niulai.jpg" alt="" width="1254" height="1254" decoding="async">
+          <img src="assets/niulai-notes.png" alt="" width="1254" height="1254" decoding="async" loading="lazy">
         </div>
         <dl class="nl-profile-saved" id="profile-saved" hidden></dl>
         <p class="nl-profile-storage-note" id="profile-storage-note" role="status" hidden></p>
@@ -123,14 +123,17 @@
 
   <dialog class="nl-profile-dialog" id="profile-dialog" aria-labelledby="profile-dialog-title">
     <div class="nl-profile-dialog-top">
-      <div class="nl-profile-guide"><span class="nl-avatar"><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></span><span id="profile-step-label">投资习惯卡</span></div>
+      <div class="nl-profile-guide">
+        <img class="nl-profile-quiz-mascot" id="profile-quiz-mascot" src="assets/niulai-notes.png" alt="牛来拿着笔，陪你记录投资习惯" width="1254" height="1254" decoding="async" loading="lazy">
+        <div class="nl-profile-guide-copy"><span id="profile-step-label">投资习惯卡</span><p class="nl-profile-speech" id="profile-companion-line">先聊聊你的节奏</p></div>
+      </div>
       <button class="nl-profile-close" id="profile-close" type="button" aria-label="关闭投资习惯卡"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </div>
     <div class="nl-profile-dialog-body" id="profile-dialog-body">
       <div class="nl-profile-progress" id="profile-progress" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="nl-profile-dialog-copy">
         <div><p class="nl-profile-result-label" id="profile-result-label" hidden>你的趣味称号</p><h2 id="profile-dialog-title" tabindex="-1">买入后，通常打算拿多久？</h2><p class="nl-profile-subtitle" id="profile-subtitle"></p></div>
-        <img id="profile-result-mascot" src="assets/niulai.jpg" alt="" width="1254" height="1254" decoding="async" hidden>
+        <img id="profile-result-mascot" src="assets/niulai-notes.png" alt="" width="1254" height="1254" decoding="async" loading="lazy" hidden>
       </div>
       <div class="nl-profile-options" id="profile-options" role="group" aria-labelledby="profile-dialog-title"></div>
       <dl class="nl-profile-result" id="profile-result" hidden></dl>

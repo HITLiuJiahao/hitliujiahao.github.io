@@ -31,6 +31,7 @@
     ]}
   ];
   const legacyDrawdown={none:'不接受回落',pct_5:'最多回落 5%',pct_10:'最多回落 10%',pct_20:'最多回落 20%',over_20:'可接受 20% 以上',unsure:'暂不确定'};
+  const companionLines=['先聊聊你的节奏','怎么舒服，怎么选','最后一题，马上出卡'];
   const emptyAnswers = () => Object.fromEntries(questions.map(question => [question.key,null]));
   const choice = (answers,index) => questions[index].options.find(option => option.id===answers[questions[index].key]);
   function validate(raw) {
@@ -189,10 +190,13 @@
     $('#profile-auto-hint').hidden=!isQuestion;
     $('#profile-result-label').hidden=!isResult;
     $('#profile-result-mascot').hidden=!isResult;
+    $('#profile-quiz-mascot').hidden=!isQuestion;
+    $('#profile-companion-line').hidden=!isQuestion;
     $('#profile-subtitle').hidden=isResult || (isQuestion && !question.subtitle);
     notice();
     $('#profile-options').replaceChildren();
     if (isQuestion) {
+      $('#profile-companion-line').textContent=companionLines[step];
       $('#profile-step-label').textContent=`${question.name} · ${step+1} / 3`;
       $('#profile-dialog-title').textContent=question.title;
       $('#profile-subtitle').textContent=question.subtitle;
@@ -240,13 +244,14 @@
     }
     $('#profile-dialog-title').focus({preventScroll:true});
   }
-  function close(toSearch=false) {
+  function close(showSavedCard=false) {
     cancelAdvance();
     if (typeof dialog.close==='function') dialog.close(); else dialog.removeAttribute('open');
     if (fallbackInert) {$('.niulai-shell').inert=previousInert;fallbackInert=false;}
-    if (toSearch) {
-      $('.nl-search-card').scrollIntoView({block:'start',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
-      $('#stock-query').focus({preventScroll:true});
+    if (showSavedCard) {
+      // Keep the completed card in view. Focusing the search field hides it and opens the phone keyboard.
+      $('#profile-card').focus({preventScroll:true});
+      $('#profile-card').scrollIntoView({block:'start',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     } else $('#profile-open').focus({preventScroll:true});
   }
   function save() {
@@ -259,7 +264,7 @@
     } catch {memoryOnly=true;}
     profile=next;renderCard();
     if (memoryOnly) {saveAttempted=true;render(true);return;}
-    $('#niulai-status').textContent='投资习惯已保存到当前浏览器。';
+    $('#niulai-status').textContent='投资习惯卡已保存，下方可以继续选股票。';
     close(true);
   }
   $('#profile-open').addEventListener('click',open);
