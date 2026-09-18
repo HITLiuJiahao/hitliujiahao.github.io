@@ -8,8 +8,10 @@
 
 - `index.html`：微证券风格首页，行情榜单、开户和交易等仍是演示交互。
 - `niulai.html`：股票联想搜索与真实公开资料图表，可从首页“立即进入”打开。
-- [线上首页](https://hitliujiahao.github.io/)
-- [牛来页面 v10](https://hitliujiahao.github.io/niulai.html?v=10)
+- [线上首页](https://hitliujiahao.github.io/index.html?v=11)
+- [牛来页面 v11](https://hitliujiahao.github.io/niulai.html?v=11)
+
+v11 为首页牛来卡片增加常驻“新功能”标签，“立即进入”按钮每 3.8 秒循环一次柔和扫光，文字和箭头保持清晰。光泽仅限按钮范围，不改变布局；开启减少动态效果时停用动画，保留标签和静态按钮。牛来形象保持静止。
 
 v10 的默认“试试”快捷入口为腾讯控股、贵州茅台、特斯拉。
 
