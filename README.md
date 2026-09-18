@@ -1,2 +1,13 @@
-# hitliujiahao.github.io
-Independent educational frontend demo: securities homepage and Niulai entry. Not affiliated with Tencent.
+# 微证券界面与牛来入口演示
+
+这是独立制作的静态前端学习演示，与腾讯及腾讯微证券没有关联，不是腾讯官方服务。页面顶部有明确的演示标识。
+
+- 网站：https://hitliujiahao.github.io/
+- 首页：`index.html`
+- 牛来占位页：`niulai.html`
+- 行情、新闻及交互均为示例，不提供真实开户、交易、投资建议或 AI 问答。
+- 页面不收集账号、密码或其他个人信息。GitHub Pages 平台可能按其隐私声明处理访问日志。
+
+使用原生 HTML、CSS 和 JavaScript，无需构建。GitHub Pages 从 `main` 分支根目录发布；`.nojekyll` 用于直接提供静态文件。
+
+腾讯相关名称、标识及参考形象属于其各自权利人，仅用于本演示的界面学习与展示。
