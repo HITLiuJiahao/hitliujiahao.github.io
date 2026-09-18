@@ -9,7 +9,7 @@
   const svg=(label,body,height=164)=>`<svg xmlns="http://www.w3.org/2000/svg" class="nl-chart-svg" viewBox="0 0 320 ${height}" role="img" aria-label="${escape(label)}"><title>${escape(label)}</title>${body}</svg>`;
   const path=(values,x,y)=>{let started=false;return values.map((v,i)=>{if(!Number.isFinite(v)){started=false;return '';}const command=started?'L':'M';started=true;return `${command}${x(i).toFixed(2)},${y(v).toFixed(2)}`;}).join(' ');};
   const time=value=>new Date(value).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
-  let report=null,view={days:20,point:19},metrics=null,verdict=null;
+  let report=null,view={days:20,point:19},metrics=null,verdict=null,personal=null;
   const missing=message=>`<div class="nl-data-missing"><span>暂缺</span><p>${escape(message)}</p></div>`;
   const caption=(n,title,extra='')=>`<div class="nl-chart-heading"><h4><span>${n}</span>${title}</h4>${extra}</div>`;
   function currentQuote(){
@@ -123,16 +123,32 @@
     const sections=report.sections,m=sections.market?.data;
     const e=verdict?.evidence;
     const reasoning=verdict?.asOf?`<p>一句话参考 ${escape(verdict.asOf)} 及之前的收盘数据${e?.partialExcluded?'，不含末日未确认收盘的数据':''}。${e?`价格比 20 日均价${e.distance>=0?'高':'低'} ${number(Math.abs(e.distance))}%，均价近 5 日${e.slope>=0?'升':'降'} ${number(Math.abs(e.slope))}%；MACD 的 DIF ${number(e.dif)}、DEA ${number(e.dea)}，RSI14 ${number(e.rsi,1)}，成交量为此前 5 日均量的 ${number(e.volume)} 倍。`:''}</p>`:'';
-    return `<details class="nl-cache-details"><summary>数据详情</summary>${Object.entries({quote:'最新报价',market:'历史走势',profile:'公司资料',news:'个股新闻',industryNews:'行业资讯'}).filter(([key])=>key in sections).map(([key,label])=>{const s=sections[key];return `<div><span>${label}</span><span>${s?.data?`${time(s.fetchedAt)} 获取${s.stale?' · 已过期':s.via==='cache'?' · 已缓存':''}`:'暂缺'}${s?.error?' · 更新未成功':''}</span></div>`;}).join('')}<p>获取时间为北京时间，不代表内容发布时间。当前浏览器缓存：量价 5 分钟、新闻 15 分钟、公司资料 24 小时；手动刷新间隔 30 秒。${window.NiulaiCache.info().persistent?'':'无法持久保存，仅本次有效。'}</p>${reasoning}<p>一句话由预设规则生成，尚未接入 AI 模型、未经回测。腾讯采用正向措辞，判断条件与其他股票相同。</p>${m?`<p>图表由日线计算。${m.basis==='未复权'?'未复权走势会受分红、拆股影响。':''}RSI 采用近 14 日涨跌额简单平均口径，非 Wilder 平滑；MACD 参数为 12、26、9。</p>`:''}</details>`;
+    const preferenceDetail=personal?`<p>本次已结合当前浏览器保存的投资习惯。持有时长调整观察重点，波动感受用于提示可能的不适，总预算仅调整资金安排提示，不推算单只股票投入或正式风险等级。${personal.legacy?'旧卡片仍按回落承受理解，使用近 20 个已收盘交易日内从前期高点到后续低点的最大收盘回落。':'价格起伏为近 20 个已收盘交易日的最高、最低收盘价之差除以最低收盘价；用于粗略对照你所选的波动感受，并非收益率、波动率或未来损失预测。'}${personal.swing?`对照截至 ${escape(personal.swing.asOf)}。`:''}“不到 5%”“超过 20%”不视为精确阈值。偏好仅在本机参与规则计算，不会发送给数据平台。</p>`:'';
+    return `<details class="nl-cache-details"><summary>数据详情</summary>${Object.entries({quote:'最新报价',market:'历史走势',profile:'公司资料',news:'个股新闻',industryNews:'行业资讯'}).filter(([key])=>key in sections).map(([key,label])=>{const s=sections[key];return `<div><span>${label}</span><span>${s?.data?`${time(s.fetchedAt)} 获取${s.stale?' · 已过期':s.via==='cache'?' · 已缓存':''}`:'暂缺'}${s?.error?' · 更新未成功':''}</span></div>`;}).join('')}<p>获取时间为北京时间，不代表内容发布时间。当前浏览器缓存：量价 5 分钟、新闻 15 分钟、公司资料 24 小时；手动刷新间隔 30 秒。${window.NiulaiCache.info().persistent?'':'无法持久保存，仅本次有效。'}</p>${reasoning}${preferenceDetail}<p>一句话由预设规则生成，尚未接入 AI 模型、未经回测。腾讯采用正向措辞，判断条件与其他股票相同。</p>${m?`<p>图表由日线计算。${m.basis==='未复权'?'未复权走势会受分红、拆股影响。':''}RSI 采用近 14 日涨跌额简单平均口径，非 Wilder 平滑；MACD 参数为 12、26、9。</p>`:''}</details>`;
   }
-  function render(stock,marketLabel,data,{updating=false}={}){
+  function preferencePanel(){
+    if (!personal) return `<button class="nl-fit-invite" type="button" data-edit-profile>填写投资习惯，让提醒更贴合你 <span aria-hidden="true">›</span></button>`;
+    const icons={holding:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',volatility:'<path d="M3 17 8 8l5 8 5-11 3 7"/>',budget:'<path d="M20 7H5a2 2 0 0 1 0-4h13v4M3 5v14a2 2 0 0 0 2 2h15V7m0 5h-6v5h6"/>'};
+    const comparison=()=>{
+      if (!personal.swing) return '';
+      const {swing,threshold}=personal,scale=Math.max(20,swing.value,threshold||0);
+      const tracks=[{label:swing.kind,value:swing.value,kind:'observed'}];
+      if (threshold!==null) tracks.push({label:personal.legacy?'你的回落参考线':'你的焦虑参考幅度',value:threshold,kind:'preference'});
+      return `<div class="nl-fit-comparison" role="img" aria-label="${escape(tracks.map(track=>`${track.label} ${number(track.value,1)}%`).join('；'))}。仅对照历史收盘价格，不预测未来。">${tracks.map(track=>`<div class="nl-fit-bar-row" aria-hidden="true"><span>${track.label}</span><i class="nl-fit-bar"><b class="is-${track.kind}" style="width:${track.value/scale*100}%"></b></i><strong>${number(track.value,1)}%</strong></div>`).join('')}</div>`;
+    };
+    return `<section class="nl-fit-panel" aria-labelledby="nl-fit-heading" data-profile-applied="true"><div class="nl-fit-heading"><h4 id="nl-fit-heading">按你的投资习惯</h4><button type="button" data-edit-profile aria-label="修改投资习惯">修改 <span aria-hidden="true">›</span></button></div>${personal.rows.map(row=>`<div class="nl-fit-row" data-preference="${row.key}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[row.key]}</svg><div class="nl-fit-copy"><div class="nl-fit-label"><span>${escape(row.label)}</span><strong>${escape(row.value)}</strong></div><p class="${row.key==='volatility'&&personal.exceeds?'is-caution':''}">${escape(row.text)}</p>${row.key==='volatility'?comparison():''}</div></div>`).join('')}${personal.swing?'<p class="nl-fit-footnote">历史起伏仅作对照，不代表未来表现。</p>':''}</section>`;
+  }
+  function render(stock,marketLabel,data,{updating=false,profile=null}={}){
     const sameStock=report?.stock.id===stock.id;report=data;metrics=window.NiulaiData.calculate(report.sections.market?.data);if(!sameStock)view={days:20,point:19};
     const m=report.sections.market?.data;
     verdict=window.NiulaiVerdict?.evaluate(stock,m,{updating})||{state:'unavailable',headline:'暂时无法判断是否值得买',asOf:null};
+    personal=window.NiulaiVerdict?.personalize?.(stock,m,verdict,profile)||null;
+    const opinion=personal||verdict;
     const quote=quoteCard();
     const old=m && Date.now()-Date.parse(m.bars.at(-1).date)>10*86400000;
     return `<article class="nl-report nl-visual-report">
-      <div class="nl-visual-verdict" data-verdict="${escape(verdict.state)}"><div><span>牛来观点${verdict.asOf?`<time datetime="${escape(verdict.asOf)}"> · ${escape(verdict.asOf.slice(5))} 收盘</time>`:''}</span><h3>${verdict.headline.split('，').map(escape).join('，<br>')}</h3></div><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></div>
+      <div class="nl-visual-verdict" data-verdict="${escape(opinion.state)}" data-market-verdict="${escape(verdict.state)}"><div><span>牛来观点${verdict.asOf?`<time datetime="${escape(verdict.asOf)}"> · ${escape(verdict.asOf.slice(5))} 收盘</time>`:''}</span><h3>${opinion.headline.split('，').map(escape).join('，<br>')}</h3></div><img src="assets/niulai.jpg" alt="" width="1254" height="1254"></div>
+      ${preferencePanel()}
       <p class="nl-verdict-risk">AI 建议，仅供参考。<br>投资有风险，入市需谨慎。</p>
       <div class="nl-report-stock"><h3>${escape(stock.name)}</h3>${marketLabel}<span class="nl-report-code">${escape(stock.code)}</span></div>
       ${quote}${cachePanel(updating)}

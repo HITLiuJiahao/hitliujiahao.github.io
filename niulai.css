@@ -281,3 +281,29 @@
 .nl-quote-metrics span{font-size:.625rem;color:#a29591}
 .nl-quote-metrics strong{font-size:.875rem;font-weight:500;color:#766862;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .nl-quote-backup{font-size:.625rem;line-height:1.7;color:#b49468;background:#fdf8f0;padding:.5rem .625rem;border-radius:.375rem;margin:.5rem 0}
+
+/* Compact preference context, using the same warm paper and coral accents as the habit card. */
+.nl-fit-panel{border:1px solid #f2e9e5;border-radius:.6875rem;background:#fffcfa;margin:.625rem 0;padding:.6875rem .8125rem}
+.nl-fit-heading{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.nl-fit-heading h4{margin:0;font-size:.78125rem;font-weight:600;color:#78645f}
+.nl-fit-heading button{color:#bc8779;font-size:.6875rem;min-height:2rem;min-width:2.75rem}
+.nl-fit-row{display:flex;align-items:flex-start;gap:.5625rem;padding:.6875rem 0}
+.nl-fit-row+.nl-fit-row{border-top:1px solid #f1eae6}
+.nl-fit-row>.icon{color:#c89988;background:#fbf1eb;border-radius:.4375rem;padding:.3125rem;width:1.8125rem;height:1.8125rem;stroke-width:1.6}
+.nl-fit-copy{min-width:0;flex:1}
+.nl-fit-label{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:.5rem;row-gap:.1875rem;line-height:1.5}
+.nl-fit-label>span{font-size:max(.625rem,11px);color:#998b86}
+.nl-fit-label>strong{font-size:max(.71875rem,12px);font-weight:500;color:#79635c}
+.nl-fit-copy>p{margin-top:.25rem;font-size:max(.75rem,12px);line-height:1.65;color:#696c7b}
+.nl-fit-copy>p.is-caution{color:#ba776a}
+.nl-fit-comparison{margin-top:.5rem;display:flex;flex-direction:column;gap:.3125rem}
+.nl-fit-bar-row{display:grid;grid-template-columns:8.25em minmax(1rem,1fr) 3.8em;gap:.375rem;align-items:center;font-size:max(.59375rem,10px);color:#a1938d;line-height:1.5}
+.nl-fit-bar-row>span{white-space:nowrap}
+.nl-fit-bar{height:.375rem;border-radius:1rem;background:#f1ece9;overflow:hidden}
+.nl-fit-bar b{display:block;height:100%;border-radius:inherit}
+.nl-fit-bar .is-observed{background:#db9384}
+.nl-fit-bar .is-preference{background:#a2b0c1}
+.nl-fit-bar-row>strong{font-weight:500;text-align:right;font-variant-numeric:tabular-nums;color:#927b71}
+.nl-fit-footnote{font-size:max(.5625rem,10px);color:#a39793;line-height:1.6;margin:.125rem 0 0}
+.nl-fit-invite{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;background:#faf7f5;color:#a28377;border-radius:.4375rem;font-size:max(.6875rem,12px);line-height:1.6;padding:.625rem .75rem;margin:.625rem 0}
+@media(max-width:360px){.nl-fit-panel{padding:.5625rem .625rem}.nl-fit-row{gap:.4375rem}.nl-fit-bar-row{grid-template-columns:8.25em minmax(.75rem,1fr) 3.8em;gap:.25rem}}

@@ -263,11 +263,13 @@
       memoryOnly=false;
     } catch {memoryOnly=true;}
     profile=next;renderCard();
+    window.dispatchEvent(new Event('niulai:profilechange'));
     if (memoryOnly) {saveAttempted=true;render(true);return;}
     $('#niulai-status').textContent='投资习惯卡已保存，下方可以继续选股票。';
     close(true);
   }
   $('#profile-open').addEventListener('click',open);
+  document.addEventListener('click',event=>{if(event.target.closest('[data-edit-profile]'))open();});
   $('#profile-close').addEventListener('click',()=>close());
   dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
   $('#profile-options').addEventListener('click',event=>{
@@ -299,6 +301,7 @@
     if (screen==='clear') {
       try {window.localStorage.removeItem(KEY);} catch {notice('浏览器未能清除记录，请重试或清理此网站的浏览器数据。');return;}
       profile=null;memoryOnly=false;draft=emptyAnswers();renderCard();
+      window.dispatchEvent(new Event('niulai:profilechange'));
       $('#niulai-status').textContent='已清除本机保存的投资习惯。';close();return;
     }
     if (screen==='result') {save();return;}
@@ -315,7 +318,9 @@
   window.addEventListener('storage',event=>{
     if (event.key!==KEY && event.key!==null) return;
     profile=readProfile();memoryOnly=false;renderCard();
+    window.dispatchEvent(new Event('niulai:profilechange'));
     if (dialog.open) $('#profile-clear').hidden=!profile || screen==='clear';
   });
+  window.NiulaiProfile=Object.freeze({get:()=>profile?Object.freeze({...profile}):null});
   renderCard();
 })();

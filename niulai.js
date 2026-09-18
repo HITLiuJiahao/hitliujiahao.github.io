@@ -18,11 +18,11 @@
   const options = $('#stock-options');
   const suggestions = $('#suggestions');
   const advice = $('#advice-content');
-  const emptyAdvice = advice.innerHTML;
+  const adviceCard = $('#advice-card');
   const marketNames = {CN:'A 股',HK:'港股',US:'美股'};
   const preferred = {all:['HK:00700','CN:600519','US:TSLA'],CN:['CN:600519','CN:300750','CN:600584'],HK:['HK:00700','HK:01810','HK:09988'],US:['US:NVDA','US:AAPL','US:TSLA']};
   const stockById = new Map(stocks.map(stock => [stock.id,stock]));
-  const state = {market:'all',selected:null,matches:[],active:-1,composing:false,run:0,controller:null};
+  const state = {market:'all',selected:null,matches:[],active:-1,composing:false,run:0,controller:null,report:null,updating:false,scrollPending:false};
   const normalize = value => String(value).normalize('NFKC').trim().toUpperCase().replace(/[\s·]/g,'');
   const escapeHTML = value => String(value).replace(/[&<>"']/g,char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const checkIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
@@ -135,8 +135,10 @@
     state.controller?.abort();
     state.controller=null;
     state.run++;
-    advice.innerHTML=emptyAdvice;
-    $('#advice-card').setAttribute('aria-busy','false');
+    state.report=null;state.updating=false;state.scrollPending=false;
+    advice.replaceChildren();
+    adviceCard.hidden=true;
+    adviceCard.setAttribute('aria-busy','false');
     $('#ask-niulai').disabled=false;
     $('#ask-label').textContent='问牛来值不值得买';
   }
@@ -177,8 +179,20 @@
     if (input.value && !state.selected) renderSuggestions(); else closeSuggestions();
   }
 
+  function paintReport(stock,data,updating) {
+    advice.innerHTML=window.NiulaiCharts ? window.NiulaiCharts.render(stock,marketLabel(stock),data,{updating,profile:window.NiulaiProfile?.get()||null}) : '<p class="nl-noscript">图表未能载入，请刷新页面重试。</p>';
+  }
+
   function renderReport(stock,data,{updating=false}={}) {
-    advice.innerHTML=window.NiulaiCharts ? window.NiulaiCharts.render(stock,marketLabel(stock),data,{updating}) : '<p class="nl-noscript">图表未能载入，请刷新页面重试。</p>';
+    state.report=data;state.updating=updating;
+    paintReport(stock,data,updating);
+    if (state.scrollPending) {
+      state.scrollPending=false;
+      const run=state.run;
+      window.requestAnimationFrame(()=>{
+        if (run===state.run && !adviceCard.hidden) adviceCard.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+      });
+    }
     if(updating)return;
     $('#advice-card').setAttribute('aria-busy','false');
     $('#ask-niulai').disabled=false;
@@ -190,8 +204,10 @@
   async function startAdvice(stock,{force=false}={}) {
     selectStock(stock);
     const run=state.run;
+    state.scrollPending=!force;
     const controller=new AbortController();state.controller=controller;
-    $('#advice-card').setAttribute('aria-busy','true');
+    adviceCard.hidden=false;
+    adviceCard.setAttribute('aria-busy','true');
     $('#ask-niulai').disabled=true;
     $('#ask-label').textContent='牛来整理中…';
     advice.innerHTML=`<div class="nl-loading"><div class="nl-loading-ring" aria-hidden="true"></div><h3>正在整理${escapeHTML(stock.name)}的资料</h3><div class="nl-loading-tracks"><span>价格与成交量</span><span>行业资讯</span><span>热点新闻</span></div></div>`;
@@ -207,6 +223,7 @@
       if(run===state.run && state.selected?.id===stock.id)renderReport(stock,data);
     }catch(error){
       if(error.name==='AbortError' || run!==state.run)return;
+      state.report=null;state.updating=false;
       advice.innerHTML='<div class="nl-data-missing"><p>资料暂时无法整理，请点击重试。</p></div><button class="nl-example-button" id="refresh-data" type="button">重新获取资料</button>';
       $('#advice-card').setAttribute('aria-busy','false');$('#ask-niulai').disabled=false;$('#ask-label').textContent='问牛来值不值得买';state.controller=null;
       announce('资料暂时无法整理，可以重试。');
@@ -262,11 +279,14 @@
   $('#stock-form').addEventListener('submit',event=>{event.preventDefault();submitQuery();});
   document.addEventListener('pointerdown',event=>{if(!$('#search-wrap').contains(event.target)) closeSuggestions();});
   advice.addEventListener('click',event=>{
-    if (event.target.closest('#show-example')) { const id=state.selected?.id || preferred[state.market][0];startAdvice(stockById.get(id)); }
     if (event.target.closest('#refresh-data') && state.selected && !state.controller)startAdvice(state.selected,{force:true});
     if (event.target.closest('#ask-another')) {
       input.value='';onInput();$('#niulai-main').scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});input.focus({preventScroll:true});
     }
+  });
+  window.addEventListener('niulai:profilechange',()=>{
+    // Re-use this stock's data. Preferences never enter provider requests or shared data caches.
+    if (state.report && state.selected && !adviceCard.hidden) paintReport(state.selected,state.report,state.updating);
   });
   window.addEventListener('pagehide',()=>{if(state.controller) resetAdvice();});
   const missing=['CN','HK','US'].filter(m=>!loadedMarkets.includes(m));
