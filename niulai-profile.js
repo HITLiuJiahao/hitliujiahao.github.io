@@ -154,7 +154,10 @@
   }
   function renderCard() {
     $('#profile-optional').hidden=Boolean(profile);
-    $('#profile-intro').hidden=Boolean(profile);
+    $('#profile-heading-invitation').hidden=Boolean(profile);
+    $('#profile-heading-saved').hidden=!profile;
+    $('#profile-invite-mascot').hidden=Boolean(profile);
+    $('#profile-title-previews').hidden=Boolean(profile);
     $('#profile-persona').hidden=!profile;
     $('#profile-card').classList.toggle('is-complete',Boolean(profile));
     $('#profile-open-label').textContent=profile ? '修改' : '去填写';

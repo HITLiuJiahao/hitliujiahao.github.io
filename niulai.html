@@ -9,7 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4844'/%3E%3Cpath d='m5 24 7-8 5 4 9-13m-7 1 8-2-1 8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css?v=19">
   <link rel="stylesheet" href="niulai.css?v=20">
-  <link rel="stylesheet" href="niulai-profile.css?v=20">
+  <link rel="stylesheet" href="niulai-profile.css?v=21">
   <script src="stock-catalog.js" defer></script>
   <script src="stock-directory-cn.js?v=3" defer></script>
   <script src="stock-directory-cn-2.js?v=3" defer></script>
@@ -26,7 +26,7 @@
   <script src="niulai-verdict.js?v=18" defer></script>
   <script src="niulai-charts.js?v=18" defer></script>
   <script src="niulai.js?v=18" defer></script>
-  <script src="niulai-profile.js?v=18" defer></script>
+  <script src="niulai-profile.js?v=21" defer></script>
 </head>
 <body>
   <div class="app-shell niulai-shell">
@@ -49,10 +49,17 @@
       <section class="nl-card nl-profile-card" id="profile-card" aria-labelledby="profile-heading" tabindex="-1">
         <div class="nl-profile-row">
           <div class="nl-profile-copy">
-            <h2 id="profile-heading">投资习惯卡 <span id="profile-optional">选填</span></h2>
-            <p id="profile-intro">3 个小选择，让牛来更懂你</p>
+            <h2 id="profile-heading"><span id="profile-heading-invitation"><span class="nl-profile-invite-lead">填投资习惯卡，</span><span class="nl-profile-invite-promise"><strong>得趣味财富称号</strong>，让牛来更懂你</span></span><span id="profile-heading-saved" hidden>我的投资习惯卡</span></h2>
           </div>
-          <button class="nl-profile-entry" id="profile-open" type="button" aria-haspopup="dialog"><span id="profile-open-label">去填写</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+          <img class="nl-profile-invite-mascot" id="profile-invite-mascot" src="assets/niulai-notes.png" alt="牛来拿着笔，邀请你填写投资习惯" width="1254" height="1254" decoding="async">
+          <div class="nl-profile-entry-bar">
+            <div class="nl-profile-title-previews" id="profile-title-previews" role="group" aria-label="趣味称号示例">
+              <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 9-7 9s-7-5-7-9V6Z"/><path d="m8.5 11.5 2.5 2.5 4.5-5"/></svg>稳稳党</span>
+              <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4m0 0c5-3 7 3 13 0v10c-6 3-8-3-13 0"/></svg>长跑派</span>
+            </div>
+            <span id="profile-optional">选填</span>
+            <button class="nl-profile-entry" id="profile-open" type="button" aria-haspopup="dialog"><span id="profile-open-label">去填写</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+          </div>
         </div>
         <div class="nl-profile-persona" id="profile-persona" hidden>
           <div class="nl-profile-name-row"><h3 id="profile-nickname"></h3><span class="nl-profile-fun-label">趣味称号</span></div>
