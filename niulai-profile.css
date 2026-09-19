@@ -9,9 +9,10 @@
 .nl-profile-invite-promise strong{font-weight:600;color:#cf6559}
 .nl-profile-invite-mascot{display:block;flex:none;width:4.375rem;height:4.375rem;object-fit:contain;pointer-events:none}
 .nl-profile-entry-bar{grid-column:1/-1;display:flex;align-items:center;gap:.625rem;min-width:0}
-.nl-profile-title-previews{display:flex;align-items:center;gap:.375rem;flex:1;min-width:0}
+.nl-profile-title-previews{display:grid;grid-template-columns:repeat(3,max-content);align-items:center;gap:.375rem;flex:1;min-width:0}
+.nl-profile-entry-actions{display:flex;flex-direction:column;align-items:center;gap:.1875rem;flex:none}
 .nl-profile-preview-badge{display:inline-flex;align-items:center;gap:.25rem;white-space:nowrap;padding:.3125rem .4375rem;border:1px solid #f1e2d7;border-radius:.4375rem;background:#fff6ed;color:#ac8262;font-size:max(.6875rem,11px);line-height:1.5;font-weight:500}
-.nl-profile-preview-badge:nth-child(2){color:#bb7a70;border-color:#f1dfda;background:#fff3ef}
+.nl-profile-preview-badge:nth-child(even){color:#bb7a70;border-color:#f1dfda;background:#fff3ef}
 .nl-profile-preview-badge .icon{width:.875rem;height:.875rem;stroke-width:1.6}
 #profile-optional{font-size:max(.625rem,11px);font-weight:400;line-height:1.5;color:#a58e86;white-space:nowrap}
 .nl-profile-entry{display:flex;align-items:center;justify-content:center;gap:.25rem;flex:none;min-height:44px;min-width:4.75rem;padding:0 .625rem;border:1px solid #cf6559;background:#cf6559;color:#fff;border-radius:.5rem;font-size:max(.75rem,12px);font-weight:600}

@@ -57,7 +57,6 @@
 .nl-ask-button>.icon{width:1.125rem;height:1.125rem;stroke-width:1.7}
 .nl-ask-button>.nl-button-arrow{width:.9375rem;height:.9375rem;margin-left:.125rem}
 .nl-ask-button:disabled{background:#efa9a1;box-shadow:none;cursor:wait;opacity:1}
-.nl-catalog-note{font-size:.59375rem;text-align:center;line-height:1.5;color:#afb3c0;margin-top:.625rem}
 .nl-advice-card{margin-top:.8125rem;padding-bottom:0}
 .nl-advice-title{display:flex;align-items:center;gap:.4375rem}
 .nl-avatar{display:block;width:1.875rem;height:1.875rem;overflow:hidden;border-radius:50%;background:#fff1ed;flex:none}
@@ -119,21 +118,9 @@
 @media(hover:hover){.nl-ask-button:not(:disabled):hover{filter:brightness(.98)}.nl-example-button:hover{background:#fff0ec}}
 @media(prefers-reduced-motion:reduce){.nl-loading-ring{animation:none}.nl-market-filters button,.nl-search-field,.nl-evidence-chevron{transition:none}}
 
-/* Directory scope stays tucked beneath search; charts carry the report. */
-.nl-catalog-note{color:#8c94a6}
-.nl-catalog-details{margin-top:.5rem;font-size:.65625rem;color:#939aab;line-height:1.75}
-.nl-catalog-details summary{list-style:none;cursor:pointer;text-align:center;color:#9299aa;padding:.25rem 0}
-.nl-catalog-details summary::-webkit-details-marker{display:none}
-.nl-catalog-details summary>b{font-weight:400}
-.nl-catalog-details summary>span{display:inline-block;margin-left:.25rem;transform:rotate(90deg)}
-.nl-catalog-details[open] summary>span{transform:rotate(-90deg)}
-.nl-catalog-details[open]{border-top:1px solid #f1f2f6;padding-top:.25rem}
-.nl-catalog-details p{margin:.5rem 0}
-#catalog-coverage{background:#f7f8fb;border-radius:.375rem;padding:.5rem .625rem;margin-top:.375rem}
-#catalog-coverage>div{display:flex;align-items:center;gap:.5rem;padding:.1875rem 0}
-#catalog-coverage strong{font-weight:500;min-width:2.5rem;color:#677085}
-#catalog-coverage time{margin-left:auto;font-variant-numeric:tabular-nums}
-#reload-directory{color:var(--red);padding:.4375rem 0;text-decoration:underline}
+/* A retry appears only when a stock directory failed to load. */
+.nl-directory-feedback{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .5rem;margin-top:.75rem;padding:.5rem .75rem;border:1px solid #f1e2da;border-radius:.5rem;background:#fff8f4;color:#ac786a;font-size:max(.6875rem,11px);line-height:1.6}
+#reload-directory{color:var(--red);min-height:44px;padding:.4375rem 0;text-decoration:underline;text-underline-offset:.1875rem}
 .nl-source-links{display:flex;flex-wrap:wrap;gap:.625rem;font-size:.625rem}
 .nl-source-links a{color:#7b89a3;text-decoration:underline;text-underline-offset:.1875rem}
 .nl-report-stock h3{overflow-wrap:anywhere}

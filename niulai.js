@@ -290,8 +290,8 @@
   });
   window.addEventListener('pagehide',()=>{if(state.controller) resetAdvice();});
   const missing=['CN','HK','US'].filter(m=>!loadedMarkets.includes(m));
-  $('#catalog-note').textContent=missing.length ? `${missing.map(m=>marketNames[m]).join('、')}完整目录加载失败，暂用常用股票` : `股票目录 · ${stocks.length.toLocaleString('zh-CN')} 只`;
-  $('#catalog-coverage').innerHTML=['CN','HK','US'].map(m=>`<div><strong>${marketNames[m]}</strong><span>${marketStocks[m].length.toLocaleString('zh-CN')} 只</span><time>${loadedMarkets.includes(m)?escapeHTML(directory[m].date):'常用备用'}</time></div>`).join('')+(missing.length?'<button type="button" id="reload-directory">重新加载目录</button>':'');
-  $('#reload-directory')?.addEventListener('click',()=>window.location.reload());
+  $('#directory-feedback').hidden=missing.length===0;
+  $('#catalog-note').textContent=missing.length ? `${missing.map(m=>marketNames[m]).join('、')}完整目录加载失败，暂用常用股票` : '';
+  $('#reload-directory').addEventListener('click',()=>window.location.reload());
   renderQuickPicks();
 })();
