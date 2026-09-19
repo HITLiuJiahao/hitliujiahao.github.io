@@ -99,5 +99,5 @@
 .nl-profile-privacy{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:2.625rem;font-size:max(.625rem,11px);line-height:1.5;color:#b0a5a0}
 .nl-profile-privacy button{color:#a79992;min-height:44px;padding:.25rem 0 .25rem .5rem;font-size:inherit}
 @media(min-width:600px){.nl-profile-dialog{inset:0;margin:auto;border-radius:1rem;max-height:min(43rem,88dvh)}}
-@media(max-width:360px){.nl-hero{min-height:5.125rem}.nl-hero h1{font-size:1.1875rem}.nl-hero h1 strong{font-size:inherit}.nl-hero-mascot{width:4rem;height:4rem}.nl-profile-card{padding:.875rem}.nl-profile-entry{min-width:4.625rem;padding:0 .5rem}.nl-profile-row{gap:.375rem}.nl-profile-dialog{width:100%;max-width:100%}.nl-profile-dialog-body{padding-left:16px;padding-right:16px}.nl-profile-dialog-footer{padding-left:16px;padding-right:16px}.nl-profile-option{min-height:72px;padding:10px}}
+@media(max-width:360px){.nl-profile-card{padding:.875rem}.nl-profile-entry{min-width:4.625rem;padding:0 .5rem}.nl-profile-row{gap:.375rem}.nl-profile-dialog{width:100%;max-width:100%}.nl-profile-dialog-body{padding-left:16px;padding-right:16px}.nl-profile-dialog-footer{padding-left:16px;padding-right:16px}.nl-profile-option{min-height:72px;padding:10px}}
 @media(prefers-reduced-motion:reduce){.nl-profile-option{transition:none}}
