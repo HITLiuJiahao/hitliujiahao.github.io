@@ -9,7 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef4844'/%3E%3Cpath d='m5 24 7-8 5 4 9-13m-7 1 8-2-1 8' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css?v=19">
   <link rel="stylesheet" href="niulai.css?v=22">
-  <link rel="stylesheet" href="niulai-profile.css?v=23">
+  <link rel="stylesheet" href="niulai-profile.css?v=24">
   <script src="stock-catalog.js" defer></script>
   <script src="stock-directory-cn.js?v=3" defer></script>
   <script src="stock-directory-cn-2.js?v=3" defer></script>
@@ -26,7 +26,7 @@
   <script src="niulai-verdict.js?v=18" defer></script>
   <script src="niulai-charts.js?v=18" defer></script>
   <script src="niulai.js?v=22" defer></script>
-  <script src="niulai-profile.js?v=21" defer></script>
+  <script src="niulai-profile.js?v=24" defer></script>
 </head>
 <body>
   <div class="app-shell niulai-shell">
@@ -53,13 +53,20 @@
           </div>
           <img class="nl-profile-invite-mascot" id="profile-invite-mascot" src="assets/niulai-notes.png" alt="牛来拿着笔，邀请你填写投资习惯" width="1254" height="1254" decoding="async">
           <div class="nl-profile-entry-bar">
-            <div class="nl-profile-title-previews" id="profile-title-previews" role="group" aria-label="趣味称号示例，可左右滑动" tabindex="0">
+            <div class="nl-profile-title-previews" id="profile-title-previews" role="group" aria-label="趣味称号预览">
+              <div class="nl-profile-title-scroll" id="profile-title-scroll" role="group" aria-label="所有趣味称号，可左右滑动" tabindex="0">
+                <div class="nl-profile-title-track"><div class="nl-profile-title-set">
               <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 9-7 9s-7-5-7-9V6Z"/><path d="m8.5 11.5 2.5 2.5 4.5-5"/></svg>稳稳党</span>
               <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4m0 0c5-3 7 3 13 0v10c-6 3-8-3-13 0"/></svg>长跑派</span>
               <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-4 4 1 10 8 15 7-5 12-11 8-15Z"/></svg>安心派</span>
               <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>耐心派</span>
               <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16c3 0 4-8 7-8s4 8 7 8c2 0 3-3 4-5M17 10l4 1 1 4"/></svg>灵活派</span>
               <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg>探索派</span>
+              <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-8M3 20h18"/></svg>稳中有数派</span>
+              <span class="nl-profile-preview-badge"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>节奏派</span>
+                </div></div>
+              </div>
+              <button class="nl-profile-title-motion" id="profile-title-motion" type="button" aria-label="暂停称号轮播" title="暂停称号轮播" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7v10m6-10v10"/></svg></button>
             </div>
             <div class="nl-profile-entry-actions">
               <button class="nl-profile-entry" id="profile-open" type="button" aria-haspopup="dialog"><span id="profile-open-label">去填写</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>

@@ -58,6 +58,61 @@
   let fallbackInert=false;
   let previousInert=false;
   let advanceTimer=null;
+  const syncTitlePreview=setupTitlePreview();
+
+  function setupTitlePreview() {
+    const preview=$('#profile-title-previews'),scroller=$('#profile-title-scroll'),toggle=$('#profile-title-motion');
+    if (!scroller || !window.requestAnimationFrame) return ()=>{};
+    const list=scroller.querySelector('.nl-profile-title-set'),copy=list.cloneNode(true);
+    copy.setAttribute('aria-hidden','true');
+    scroller.querySelector('.nl-profile-title-track').append(copy);
+    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    let frame=null,lastTime=null,position=0,cycle=0,inView=true,hovered=false,dragging=false,focused=false,paused=false;
+    let holdUntil=window.performance.now()+1200;
+    const canMove=()=>!preview.hidden && !document.hidden && !dialog.open && inView && !reduced?.matches && !paused && !hovered && !dragging && !focused && cycle>scroller.clientWidth+1;
+    function stop() {
+      if (frame!==null) window.cancelAnimationFrame(frame);
+      frame=null;lastTime=null;
+    }
+    function tick(now) {
+      frame=null;
+      if (!canMove()) {lastTime=null;return;}
+      if (lastTime!==null && now>=holdUntil) {
+        // Retain fractional pixels and resume from the user's manually scrolled position.
+        if (Math.abs(scroller.scrollLeft-position)>1) position=scroller.scrollLeft;
+        position=(position+Math.min(now-lastTime,64)*.018)%cycle;
+        scroller.scrollLeft=position;
+      }
+      lastTime=now;frame=window.requestAnimationFrame(tick);
+    }
+    function sync() {
+      cycle=list.getBoundingClientRect().width;
+      const automatic=cycle>scroller.clientWidth+1 && !reduced?.matches;
+      copy.hidden=!automatic;toggle.hidden=!automatic;
+      toggle.setAttribute('aria-label',paused?'播放称号轮播':'暂停称号轮播');
+      toggle.title=toggle.getAttribute('aria-label');
+      toggle.querySelector('path').setAttribute('d',paused?'m9 6 9 6-9 6Z':'M9 7v10m6-10v10');
+      if (!canMove()) {stop();return;}
+      if (frame===null) {position=scroller.scrollLeft;frame=window.requestAnimationFrame(tick);}
+    }
+    function resumeSoon() {holdUntil=window.performance.now()+1800;sync();}
+    toggle.addEventListener('click',()=>{paused=!paused;holdUntil=0;sync();});
+    scroller.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'){hovered=true;sync();}});
+    scroller.addEventListener('pointerleave',()=>{hovered=false;resumeSoon();});
+    scroller.addEventListener('pointerdown',()=>{dragging=true;focused=false;sync();});
+    const release=()=>{if(dragging){dragging=false;resumeSoon();}};
+    window.addEventListener('pointerup',release);window.addEventListener('pointercancel',release);
+    scroller.addEventListener('wheel',resumeSoon,{passive:true});
+    scroller.addEventListener('focus',()=>{focused=!dragging;sync();});
+    scroller.addEventListener('keydown',()=>{focused=true;sync();});
+    scroller.addEventListener('blur',()=>{focused=false;resumeSoon();});
+    document.addEventListener('visibilitychange',sync);
+    reduced?.addEventListener?.('change',sync);
+    if (window.ResizeObserver) {const observer=new ResizeObserver(sync);observer.observe(scroller);observer.observe(list);}
+    else window.addEventListener('resize',sync);
+    if (window.IntersectionObserver) new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;sync();}).observe(preview);
+    return sync;
+  }
 
   function element(tag,text,className) {
     const node=document.createElement(tag);
@@ -169,6 +224,7 @@
     }
     $('#profile-storage-note').hidden=!(profile && memoryOnly);
     $('#profile-storage-note').textContent='本次可用，浏览器未能保存这次填写。';
+    syncTitlePreview();
   }
   function notice(text='') {
     $('#profile-dialog-notice').hidden=!text;
@@ -246,6 +302,7 @@
       dialog.setAttribute('open','');dialog.setAttribute('aria-modal','true');
     }
     $('#profile-dialog-title').focus({preventScroll:true});
+    syncTitlePreview();
   }
   function close(showSavedCard=false) {
     cancelAdvance();
@@ -256,6 +313,7 @@
       $('#profile-card').focus({preventScroll:true});
       $('#profile-card').scrollIntoView({block:'start',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     } else $('#profile-open').focus({preventScroll:true});
+    syncTitlePreview();
   }
   function save() {
     if (saveAttempted) {close(true);return;}

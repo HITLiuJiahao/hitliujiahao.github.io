@@ -9,11 +9,17 @@
 .nl-profile-invite-promise strong{font-weight:600;color:#df6257}
 .nl-profile-invite-mascot{display:block;flex:none;width:3.75rem;height:3.75rem;object-fit:contain;pointer-events:none}
 .nl-profile-entry-bar{grid-column:1/-1;display:flex;align-items:center;gap:.75rem;min-width:0}
-.nl-profile-title-previews{display:flex;flex-wrap:nowrap;align-items:center;gap:.375rem;flex:1;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;scroll-snap-type:x proximity;padding:.1875rem .75rem .1875rem 0;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - .5rem),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - .5rem),transparent)}
-.nl-profile-title-previews::-webkit-scrollbar{display:none}
-.nl-profile-title-previews:focus-visible{outline:2px solid #eeaaa6;outline-offset:2px;border-radius:.375rem}
+.nl-profile-title-previews{display:flex;align-items:center;gap:.25rem;flex:1;min-width:0}
+.nl-profile-title-scroll{flex:1;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:.1875rem 0;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - .5rem),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - .5rem),transparent)}
+.nl-profile-title-scroll::-webkit-scrollbar{display:none}
+.nl-profile-title-scroll:focus-visible,.nl-profile-title-motion:focus-visible{outline:2px solid #eeaaa6;outline-offset:2px;border-radius:.375rem}
+.nl-profile-title-track{display:flex;width:max-content}
+.nl-profile-title-set{display:flex;align-items:center;gap:.375rem;flex:none;padding-right:.375rem}
+.nl-profile-title-motion{display:flex;align-items:center;justify-content:center;flex:none;width:24px;height:32px;padding:0;border:0;border-radius:.375rem;background:transparent;color:#a0a6b5}
+.nl-profile-title-motion .icon{width:14px;height:14px;stroke-width:1.8}
+.nl-profile-title-motion:hover{color:#ce8378;background:#fbf5f3}
 .nl-profile-entry-actions{display:flex;flex-direction:row-reverse;align-items:center;gap:.4375rem;flex:none}
-.nl-profile-preview-badge{display:inline-flex;flex:none;align-items:center;gap:.25rem;white-space:nowrap;padding:.3125rem .4375rem;border:1px solid #edeef4;border-radius:.375rem;background:#f6f7fb;color:#7d8599;font-size:max(.6875rem,11px);line-height:1.5;font-weight:500;scroll-snap-align:start}
+.nl-profile-preview-badge{display:inline-flex;flex:none;align-items:center;gap:.25rem;white-space:nowrap;padding:.3125rem .4375rem;border:1px solid #edeef4;border-radius:.375rem;background:#f6f7fb;color:#7d8599;font-size:max(.6875rem,11px);line-height:1.5;font-weight:500}
 .nl-profile-preview-badge .icon{width:.875rem;height:.875rem;stroke-width:1.6;color:#ce8378}
 #profile-optional{font-size:max(.625rem,11px);font-weight:400;line-height:1.5;color:#a0a6b5;white-space:nowrap}
 .nl-profile-entry{display:flex;align-items:center;justify-content:center;gap:.25rem;flex:none;min-height:44px;min-width:4.75rem;padding:0 .625rem;border:1px solid #e25b51;background:linear-gradient(100deg,#ed665a,#e25b51);color:#fff;border-radius:.5rem;font-size:max(.75rem,12px);font-weight:600}
