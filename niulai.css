@@ -3,7 +3,7 @@
 .niulai-page-title{font-size:1.0625rem;letter-spacing:.025rem}
 .niulai-back{font-size:.875rem}
 .nl-header-tag{position:absolute;right:1rem;font-size:.6875rem;color:var(--muted)}
-.niulai-page-content{--nl-profile-inset:1rem;--nl-mascot-size:4.25rem;position:relative;min-height:0;overscroll-behavior-y:contain;background:linear-gradient(180deg,#fff7f5 0,var(--paper) 10rem);padding:0 .8125rem max(1rem,env(safe-area-inset-bottom));scrollbar-width:thin;scrollbar-color:#dadde5 transparent;scroll-padding-top:.8125rem}
+.niulai-page-content{--nl-profile-inset:1rem;--nl-mascot-size:4.25rem;position:relative;min-height:0;overscroll-behavior-y:contain;background:linear-gradient(180deg,#fff7f5 0,var(--paper) 10rem);padding:0 .8125rem calc(max(1rem,env(safe-area-inset-bottom)) + var(--nl-search-keyboard-inset,0px));scrollbar-width:thin;scrollbar-color:#dadde5 transparent;scroll-padding-top:.8125rem}
 .nl-hero{display:flex;align-items:center;justify-content:space-between;gap:.625rem;position:relative;min-height:5.75rem;padding:.75rem calc(var(--nl-profile-inset) + 1px) .875rem .25rem}
 .nl-hero-copy{position:relative;z-index:1;min-width:0}
 .nl-eyebrow{display:flex;align-items:center;gap:.3125rem;font-size:.625rem;letter-spacing:.125rem;color:#a67670;margin-bottom:.5625rem}
@@ -32,7 +32,7 @@
 .nl-search-error{color:#cf534c}
 .nl-suggestions{position:relative;margin-top:.375rem;background:#fff;border:1px solid #ececf2;border-radius:.5rem;overflow:hidden}
 .nl-suggestion-heading{display:flex;justify-content:space-between;gap:.5rem;padding:.625rem .8125rem .4375rem;color:#9ba1b0;font-size:.65625rem}
-#stock-options{max-height:13rem;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#stock-options{max-height:min(13rem,var(--nl-options-available,13rem));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 .nl-option{display:flex;align-items:center;gap:.625rem;padding:.6875rem .8125rem;width:100%;text-align:left;min-height:3.4375rem;border-top:1px solid #f4f5f8}
 .nl-option:hover,.nl-option.is-highlighted{background:#fff4f2}
 .nl-option-main{display:flex;flex-direction:column;gap:.1875rem;flex:1;min-width:0}

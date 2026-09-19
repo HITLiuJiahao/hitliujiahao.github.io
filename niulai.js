@@ -19,6 +19,8 @@
   const suggestions = $('#suggestions');
   const advice = $('#advice-content');
   const adviceCard = $('#advice-card');
+  const main = $('#niulai-main');
+  let suggestionLayoutFrame=null;
   const marketNames = {CN:'A 股',HK:'港股',US:'美股'};
   const preferred = {all:['HK:00700','CN:600519','US:TSLA'],CN:['CN:600519','CN:300750','CN:600584'],HK:['HK:00700','HK:01810','HK:09988'],US:['US:NVDA','US:AAPL','US:TSLA']};
   const stockById = new Map(stocks.map(stock => [stock.id,stock]));
@@ -85,10 +87,42 @@
   }
 
   function closeSuggestions() {
+    if (suggestionLayoutFrame!==null) window.cancelAnimationFrame(suggestionLayoutFrame);
+    suggestionLayoutFrame=null;
     suggestions.hidden=true;
+    options.style.removeProperty('--nl-options-available');
+    main.style.removeProperty('--nl-search-keyboard-inset');
     input.setAttribute('aria-expanded','false');
     input.removeAttribute('aria-activedescendant');
     state.active=-1;
+  }
+
+  function fitSuggestionsInView() {
+    suggestionLayoutFrame=null;
+    if (suggestions.hidden || document.activeElement!==input) return;
+    const viewport=window.visualViewport,frame=main.getBoundingClientRect();
+    const visibleTop=Math.max(frame.top,viewport?.offsetTop||0)+12;
+    const visibleBottom=Math.min(frame.bottom,(viewport?.offsetTop||0)+(viewport?.height||window.innerHeight))-12;
+    if (visibleBottom<=visibleTop) return;
+    const field=$('#search-field').getBoundingClientRect();
+    const card=$('.nl-search-card').getBoundingClientRect();
+    const caption=$('.nl-suggestion-heading').getBoundingClientRect().height;
+    const preferredHeight=Math.min(options.scrollHeight,13*parseFloat(window.getComputedStyle(document.documentElement).fontSize));
+    const contextHeight=field.top-card.top;
+    // Keep the section heading and markets when they fit; prioritize the input on short screens.
+    const showContext=contextHeight+field.height+caption+preferredHeight+16<=visibleBottom-visibleTop;
+    const targetTop=visibleTop+(showContext?contextHeight:0);
+    options.style.setProperty('--nl-options-available',`${Math.max(44,visibleBottom-targetTop-field.height-caption-16)}px`);
+    // Mobile keyboards can cover the layout viewport without resizing the page itself.
+    main.style.setProperty('--nl-search-keyboard-inset',`${Math.max(0,frame.bottom-visibleBottom-12)}px`);
+    if (field.top<visibleTop || suggestions.getBoundingClientRect().bottom>visibleBottom) {
+      main.scrollTo({top:Math.max(0,main.scrollTop+field.top-targetTop),behavior:'auto'});
+    }
+  }
+
+  function scheduleSuggestionLayout() {
+    if (suggestions.hidden || document.activeElement!==input || suggestionLayoutFrame!==null) return;
+    suggestionLayoutFrame=window.requestAnimationFrame(fitSuggestionsInView);
   }
 
   function renderSuggestions() {
@@ -104,6 +138,7 @@
     suggestions.hidden=false;
     input.setAttribute('aria-expanded','true');
     announce(visible.length ? `找到 ${state.matches.length} 只匹配股票，可用上下方向键选择。` : '当前股票目录没有匹配。');
+    scheduleSuggestionLayout();
   }
 
   function setActive(index) {
@@ -259,6 +294,9 @@
   input.addEventListener('compositionstart',()=>{state.composing=true;closeSuggestions();});
   input.addEventListener('compositionend',()=>{state.composing=false;onInput();});
   input.addEventListener('focus',()=>{if (!state.selected && !state.composing) renderSuggestions();});
+  window.addEventListener('resize',scheduleSuggestionLayout);
+  window.visualViewport?.addEventListener('resize',scheduleSuggestionLayout);
+  window.visualViewport?.addEventListener('scroll',scheduleSuggestionLayout);
   input.addEventListener('keydown',event=>{
     if (event.isComposing || state.composing || event.keyCode===229) return;
     if (event.key==='ArrowDown' || event.key==='ArrowUp') {
