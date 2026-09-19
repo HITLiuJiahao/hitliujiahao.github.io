@@ -61,15 +61,15 @@
   const syncTitlePreview=setupTitlePreview();
 
   function setupTitlePreview() {
-    const preview=$('#profile-title-previews'),scroller=$('#profile-title-scroll'),toggle=$('#profile-title-motion');
+    const preview=$('#profile-title-previews'),scroller=$('#profile-title-scroll');
     if (!scroller || !window.requestAnimationFrame) return ()=>{};
     const list=scroller.querySelector('.nl-profile-title-set'),copy=list.cloneNode(true);
     copy.setAttribute('aria-hidden','true');
     scroller.querySelector('.nl-profile-title-track').append(copy);
     const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
-    let frame=null,lastTime=null,position=0,cycle=0,inView=true,hovered=false,dragging=false,focused=false,paused=false;
+    let frame=null,lastTime=null,position=0,cycle=0,inView=true,hovered=false,dragging=false,focused=false;
     let holdUntil=window.performance.now()+1200;
-    const canMove=()=>!preview.hidden && !document.hidden && !dialog.open && inView && !reduced?.matches && !paused && !hovered && !dragging && !focused && cycle>scroller.clientWidth+1;
+    const canMove=()=>!preview.hidden && !document.hidden && !dialog.open && inView && !reduced?.matches && !hovered && !dragging && !focused && cycle>scroller.clientWidth+1;
     function stop() {
       if (frame!==null) window.cancelAnimationFrame(frame);
       frame=null;lastTime=null;
@@ -88,15 +88,11 @@
     function sync() {
       cycle=list.getBoundingClientRect().width;
       const automatic=cycle>scroller.clientWidth+1 && !reduced?.matches;
-      copy.hidden=!automatic;toggle.hidden=!automatic;
-      toggle.setAttribute('aria-label',paused?'播放称号轮播':'暂停称号轮播');
-      toggle.title=toggle.getAttribute('aria-label');
-      toggle.querySelector('path').setAttribute('d',paused?'m9 6 9 6-9 6Z':'M9 7v10m6-10v10');
+      copy.hidden=!automatic;
       if (!canMove()) {stop();return;}
       if (frame===null) {position=scroller.scrollLeft;frame=window.requestAnimationFrame(tick);}
     }
     function resumeSoon() {holdUntil=window.performance.now()+1800;sync();}
-    toggle.addEventListener('click',()=>{paused=!paused;holdUntil=0;sync();});
     scroller.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'){hovered=true;sync();}});
     scroller.addEventListener('pointerleave',()=>{hovered=false;resumeSoon();});
     scroller.addEventListener('pointerdown',()=>{dragging=true;focused=false;sync();});

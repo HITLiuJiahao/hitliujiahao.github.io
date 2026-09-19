@@ -3,15 +3,15 @@
 .niulai-page-title{font-size:1.0625rem;letter-spacing:.025rem}
 .niulai-back{font-size:.875rem}
 .nl-header-tag{position:absolute;right:1rem;font-size:.6875rem;color:var(--muted)}
-.niulai-page-content{position:relative;min-height:0;overscroll-behavior-y:contain;background:linear-gradient(180deg,#fff7f5 0,var(--paper) 10rem);padding:0 .8125rem max(1rem,env(safe-area-inset-bottom));scrollbar-width:thin;scrollbar-color:#dadde5 transparent;scroll-padding-top:.8125rem}
-.nl-hero{display:flex;align-items:center;justify-content:space-between;gap:.625rem;position:relative;min-height:5.75rem;padding:.75rem .25rem .875rem}
+.niulai-page-content{--nl-profile-inset:1rem;--nl-mascot-size:4.25rem;position:relative;min-height:0;overscroll-behavior-y:contain;background:linear-gradient(180deg,#fff7f5 0,var(--paper) 10rem);padding:0 .8125rem max(1rem,env(safe-area-inset-bottom));scrollbar-width:thin;scrollbar-color:#dadde5 transparent;scroll-padding-top:.8125rem}
+.nl-hero{display:flex;align-items:center;justify-content:space-between;gap:.625rem;position:relative;min-height:5.75rem;padding:.75rem calc(var(--nl-profile-inset) + 1px) .875rem .25rem}
 .nl-hero-copy{position:relative;z-index:1;min-width:0}
 .nl-eyebrow{display:flex;align-items:center;gap:.3125rem;font-size:.625rem;letter-spacing:.125rem;color:#a67670;margin-bottom:.5625rem}
 .nl-eyebrow>span{width:.3125rem;height:.3125rem;background:#eaa49b;border-radius:50%}
 .nl-hero h1{font-size:1.5rem;line-height:1.4;font-weight:600;letter-spacing:-.03125rem;white-space:nowrap}
 .nl-hero h1 strong{font-size:inherit;font-weight:600;letter-spacing:inherit;color:var(--red)}
 .nl-hero-copy>p{font-size:.71875rem;color:#9395a3;letter-spacing:.0625rem;margin-top:.375rem}
-.nl-hero-mascot{display:block;flex:none;width:4.25rem;height:4.25rem;object-fit:contain;mix-blend-mode:multiply;transform:rotate(3deg);pointer-events:none}
+.nl-hero-mascot{display:block;flex:none;width:var(--nl-mascot-size);height:var(--nl-mascot-size);object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
 .nl-card{border:1px solid #ffffff;background:#fff;border-radius:.875rem;padding:1rem;box-shadow:0 .125rem .625rem #29324703}
 .nl-card-heading{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:1.5rem;margin-bottom:.875rem}
 .nl-card-heading h2{font-size:1rem;line-height:1.5;font-weight:600;letter-spacing:-.0125rem}

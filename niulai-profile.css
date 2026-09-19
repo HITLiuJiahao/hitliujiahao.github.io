@@ -1,5 +1,5 @@
 /* Optional, locally stored investor preferences. */
-.nl-profile-card{margin-bottom:.8125rem;border-color:#eeeef3;background:#fff;padding:1rem}
+.nl-profile-card{margin-bottom:.8125rem;border-color:#eeeef3;background:#fff;padding:var(--nl-profile-inset)}
 .nl-profile-card:focus{outline:none}
 .nl-profile-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem .625rem}
 .nl-profile-copy{min-width:0}
@@ -7,17 +7,14 @@
 .nl-profile-invite-lead{display:block;font-size:1rem;line-height:1.5;margin-bottom:.3125rem}
 .nl-profile-invite-promise{display:block;font-size:max(.875rem,12px);line-height:1.65;font-weight:500;color:var(--muted);white-space:nowrap}
 .nl-profile-invite-promise strong{font-weight:600;color:#df6257}
-.nl-profile-invite-mascot{display:block;flex:none;width:3.75rem;height:3.75rem;object-fit:contain;pointer-events:none}
+.nl-profile-invite-mascot{display:block;flex:none;width:var(--nl-mascot-size);height:var(--nl-mascot-size);object-fit:contain;pointer-events:none}
 .nl-profile-entry-bar{grid-column:1/-1;display:flex;align-items:center;gap:.75rem;min-width:0}
-.nl-profile-title-previews{display:flex;align-items:center;gap:.25rem;flex:1;min-width:0}
+.nl-profile-title-previews{display:flex;align-items:center;flex:1;min-width:0}
 .nl-profile-title-scroll{flex:1;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:.1875rem 0;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - .5rem),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - .5rem),transparent)}
 .nl-profile-title-scroll::-webkit-scrollbar{display:none}
-.nl-profile-title-scroll:focus-visible,.nl-profile-title-motion:focus-visible{outline:2px solid #eeaaa6;outline-offset:2px;border-radius:.375rem}
+.nl-profile-title-scroll:focus-visible{outline:2px solid #eeaaa6;outline-offset:2px;border-radius:.375rem}
 .nl-profile-title-track{display:flex;width:max-content}
 .nl-profile-title-set{display:flex;align-items:center;gap:.375rem;flex:none;padding-right:.375rem}
-.nl-profile-title-motion{display:flex;align-items:center;justify-content:center;flex:none;width:24px;height:32px;padding:0;border:0;border-radius:.375rem;background:transparent;color:#a0a6b5}
-.nl-profile-title-motion .icon{width:14px;height:14px;stroke-width:1.8}
-.nl-profile-title-motion:hover{color:#ce8378;background:#fbf5f3}
 .nl-profile-entry-actions{display:flex;flex-direction:row-reverse;align-items:center;gap:.4375rem;flex:none}
 .nl-profile-preview-badge{display:inline-flex;flex:none;align-items:center;gap:.25rem;white-space:nowrap;padding:.3125rem .4375rem;border:1px solid #edeef4;border-radius:.375rem;background:#f6f7fb;color:#7d8599;font-size:max(.6875rem,11px);line-height:1.5;font-weight:500}
 .nl-profile-preview-badge .icon{width:.875rem;height:.875rem;stroke-width:1.6;color:#ce8378}
@@ -32,7 +29,7 @@
 .nl-profile-name-row{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem}
 .nl-profile-name-row h3{font-size:max(1.375rem,20px);line-height:1.4;color:#ad6a5d;font-weight:600;letter-spacing:.03em}
 .nl-profile-fun-label{font-size:max(.625rem,10px);line-height:1.5;padding:.125rem .375rem;color:#af9286;background:#f6ece5;border-radius:.25rem;white-space:nowrap}
-.nl-profile-persona img{width:3.875rem;height:3.875rem;object-fit:contain;flex:none}
+.nl-profile-persona img{width:var(--nl-mascot-size);height:var(--nl-mascot-size);object-fit:contain;flex:none}
 .nl-profile-saved,.nl-profile-result{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0;gap:.5rem}
 .nl-profile-metric{min-width:0;padding:.75rem;background:#f8f7f6;border-radius:.625rem;position:relative}
 .nl-profile-metric-time{grid-column:1/-1}
@@ -116,5 +113,5 @@
 .nl-profile-privacy{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:2.625rem;font-size:max(.625rem,11px);line-height:1.5;color:#b0a5a0}
 .nl-profile-privacy button{color:#a79992;min-height:44px;padding:.25rem 0 .25rem .5rem;font-size:inherit}
 @media(min-width:600px){.nl-profile-dialog{inset:0;margin:auto;border-radius:1rem;max-height:min(43rem,88dvh)}}
-@media(max-width:360px){.nl-profile-card{padding:.875rem}.nl-profile-entry{min-width:4.625rem;padding:0 .5rem}.nl-profile-row{gap:.375rem}.nl-profile-dialog{width:100%;max-width:100%}.nl-profile-dialog-body{padding-left:16px;padding-right:16px}.nl-profile-dialog-footer{padding-left:16px;padding-right:16px}.nl-profile-option{min-height:72px;padding:10px}}
+@media(max-width:360px){.niulai-page-content{--nl-profile-inset:.875rem}.nl-profile-entry{min-width:4.625rem;padding:0 .5rem}.nl-profile-row{gap:.375rem}.nl-profile-dialog{width:100%;max-width:100%}.nl-profile-dialog-body{padding-left:16px;padding-right:16px}.nl-profile-dialog-footer{padding-left:16px;padding-right:16px}.nl-profile-option{min-height:72px;padding:10px}}
 @media(prefers-reduced-motion:reduce){.nl-profile-option{transition:none}}
